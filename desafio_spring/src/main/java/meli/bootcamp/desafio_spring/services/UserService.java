@@ -17,13 +17,13 @@ public class UserService {
         this.sellerRepository = sellerRepository;
     }
 
-    public void follow(Long userId, Long userIdToFollow){
+    public void followSeller(Long userId, Long sellerId){
         User user = this.userRepository.findById(userId).orElseThrow(() ->
              new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
         );
 
-        Seller seller = this.sellerRepository.findById(userIdToFollow).orElseThrow(() ->
-                new ResourceNotFoundException("The seller with id " + userIdToFollow + " doesn't exist.")
+        Seller seller = this.sellerRepository.findById(sellerId).orElseThrow(() ->
+                new ResourceNotFoundException("The seller with id " + sellerId + " doesn't exist.")
         );
 
         user.followSeller(seller);
