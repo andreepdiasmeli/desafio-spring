@@ -59,7 +59,6 @@ public class DBService {
         Product product4 = new Product("XBOX", "Gamer", "Microsoft", "White", "Much fun");
         Product product5 = new Product("PS5", "Gamer", "Sony", "Black", "Also much fun");
 
-
         product1.setPosts(List.of(post1));
         product2.setPosts(List.of(post2));
         product3.setPosts(List.of(post3));

@@ -15,8 +15,7 @@ public class User {
     @ManyToMany(mappedBy = "followers")
     private List<Seller> following = new ArrayList<>();
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username) {
         this.username = username;
@@ -37,4 +36,9 @@ public class User {
     public void setFollowing(List<Seller> following) {
         this.following = following;
     }
+
+    public void followSeller(Seller seller){
+        following.add(seller);
+    }
+
 }
