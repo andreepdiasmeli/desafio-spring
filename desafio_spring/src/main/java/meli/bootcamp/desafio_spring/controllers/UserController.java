@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.controllers;
 
 import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
+import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,16 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }
         return followerCountDTO;
+    }
+
+    @GetMapping("{userId}/followers/list")
+    public FollowersDTO getFollowers(@PathVariable(value = "userId") Long sellerId){
+        FollowersDTO followersDTO = null;
+        try{
+            followersDTO = userService.getFollowers(sellerId);
+        }catch (ResourceNotFoundException ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
+        return followersDTO;
     }
 }
