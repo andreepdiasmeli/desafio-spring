@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
 
@@ -19,7 +18,6 @@ public class UserService {
     }
 
     public void follow(Long userId, Long userIdToFollow){
-
         User user = this.userRepository.findById(userId).orElseThrow(() ->
              new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
         );

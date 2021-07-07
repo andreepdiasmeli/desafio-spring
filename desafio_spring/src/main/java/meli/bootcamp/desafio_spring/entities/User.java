@@ -15,8 +15,7 @@ public class User {
     @ManyToMany(mappedBy = "followers")
     private List<Seller> following = new ArrayList<>();
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username) {
         this.username = username;

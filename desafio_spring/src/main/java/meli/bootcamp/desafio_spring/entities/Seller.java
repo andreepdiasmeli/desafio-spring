@@ -21,8 +21,7 @@ public class Seller  extends User{
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Product> products;
 
-    public Seller() {
-    }
+    public Seller() {}
 
     public Seller(String username) {
         super(username);
