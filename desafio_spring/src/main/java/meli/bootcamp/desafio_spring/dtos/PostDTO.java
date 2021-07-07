@@ -26,14 +26,14 @@ public class PostDTO {
 
     public static PostDTO toDTO(Post post) {
         Seller seller = post.getSeller();
-        PostDTO nPostDTO = new PostDTO(
+        PostDTO newPostDTO = new PostDTO(
             post.getId(),
             post.getProduct(),
             post.getCreatedAt(),
             seller.getId(),
             post.getPrice()
         );
-        return nPostDTO;
+        return newPostDTO;
     }
 
     public Long getSellerPostId() {

@@ -5,6 +5,7 @@ import meli.bootcamp.desafio_spring.dtos.PostDTO;
 import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.entities.Seller;
+import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,12 @@ public class PostService {
         this.userService = userService;
     }
 
-    public PostDTO createPost(CreatePostDTO createPost) {
+    public PostDTO createPost(CreatePostDTO createPost) throws ResourceNotFoundException {
         Seller seller = this.userService.getSeller(createPost.getUserId());
-        Post nPost = new Post(createPost.getPrice(), seller);
+        Post newPost = new Post(createPost.getPrice(), seller);
         Product product = this.productService.getProduct(createPost.getProductId());
-        nPost.setProduct(product);
-        this.postRepository.save(nPost);
-        return PostDTO.toDTO(nPost);
+        newPost.setProduct(product);
+        this.postRepository.save(newPost);
+        return PostDTO.toDTO(newPost);
     }
 }

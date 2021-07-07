@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.entities.Product;
+import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product getProduct(Long productId) {
+    public Product getProduct(Long productId) throws ResourceNotFoundException {
+        if (!this.productRepository.existsById(productId.longValue())) {
+            throw new ResourceNotFoundException("User " + productId + " does not exist.");
+        }
         return this.productRepository.getById(productId);
     }
 }
