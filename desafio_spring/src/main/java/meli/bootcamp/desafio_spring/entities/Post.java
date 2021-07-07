@@ -36,6 +36,13 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
 
+    public Post(BigDecimal price, Seller seller, Product product) {
+        this.price = price;
+        this.seller = seller;
+        this.product = product;
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
