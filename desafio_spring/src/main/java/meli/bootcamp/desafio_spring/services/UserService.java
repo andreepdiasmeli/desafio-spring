@@ -32,4 +32,22 @@ public class UserService {
         this.userRepository.save(user);
         this.sellerRepository.save(seller);
     }
+
+    public void unFollow(Long userId, Long userIdToUnfollow){
+
+        User user = this.userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
+        );
+
+        Seller seller = this.sellerRepository.findById(userIdToUnfollow).orElseThrow(() ->
+                new ResourceNotFoundException("The seller with id " + userIdToUnfollow + " doesn't exist.")
+        );
+
+        user.unfollowSeller(seller);
+        seller.removeFollower(user);
+
+        this.userRepository.save(user);
+        this.sellerRepository.save(seller);
+    }
+
 }

@@ -25,4 +25,14 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @PostMapping("{userId}/unfollow/{userIdToUnfollow}")
+    @ResponseStatus(HttpStatus.OK)
+    public void unFollowSeller(@PathVariable Long userId, @PathVariable Long userIdToUnfollow){
+        try{
+            this.userService.unFollow(userId,userIdToUnfollow);
+        } catch (ResourceNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }
