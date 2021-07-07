@@ -22,14 +22,14 @@ public class ProductDTO {
     }
 
     public static ProductDTO toDTO(Product product) {
-        ProductDTO nProduct = new ProductDTO(product.getId(),
+        ProductDTO newProduct = new ProductDTO(product.getId(),
              product.getName(),
              product.getType(),
              product.getBrand(),
              product.getColor(),
              product.getNotes()
         );
-        return nProduct;
+        return newProduct;
     }
 
     public Long getProductId() {

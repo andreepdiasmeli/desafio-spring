@@ -24,9 +24,8 @@ public class PostService {
 
     public PostDTO createPost(CreatePostDTO createPost) throws ResourceNotFoundException {
         Seller seller = this.userService.getSeller(createPost.getUserId());
-        Post newPost = new Post(createPost.getPrice(), seller);
         Product product = this.productService.getProduct(createPost.getProductId());
-        newPost.setProduct(product);
+        Post newPost = new Post(createPost.getPrice(), seller, product);
         this.postRepository.save(newPost);
         return PostDTO.toDTO(newPost);
     }

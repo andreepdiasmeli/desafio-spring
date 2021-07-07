@@ -25,10 +25,10 @@ public class UserService {
         return FollowerCountDTO.toDTO(seller);
     }
 
-    public Seller getSeller(Long userId) throws ResourceNotFoundException {
-        if (!this.sellerRepository.existsById(userId.longValue())) {
-            throw new ResourceNotFoundException("Seller " + userId + " does not exist.");
-        }
-        return this.sellerRepository.getById(userId);
+    public Seller getSeller(Long sellerId) throws ResourceNotFoundException {
+        Seller seller = sellerRepository.findById(sellerId).orElseThrow(() ->
+                new ResourceNotFoundException("User " + sellerId + " does not exist.")
+        );
+        return seller;
     }
 }

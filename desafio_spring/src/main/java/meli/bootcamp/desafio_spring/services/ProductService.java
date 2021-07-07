@@ -15,9 +15,9 @@ public class ProductService {
     }
 
     public Product getProduct(Long productId) throws ResourceNotFoundException {
-        if (!this.productRepository.existsById(productId.longValue())) {
-            throw new ResourceNotFoundException("User " + productId + " does not exist.");
-        }
-        return this.productRepository.getById(productId);
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new ResourceNotFoundException("User " + productId + " does not exist.")
+        );
+        return product;
     }
 }
