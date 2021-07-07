@@ -1,16 +1,17 @@
 package meli.bootcamp.desafio_spring.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SellerPostsResponseDTO {
+public class UserFollowingPostsDTO {
     
     private Long userId;
     private List<PostDTO> posts;
     
 
-    public SellerPostsResponseDTO() {}
+    public UserFollowingPostsDTO() {}
 
-    public SellerPostsResponseDTO(Long userId, List<PostDTO> posts) {
+    public UserFollowingPostsDTO(Long userId, List<PostDTO> posts) {
         this.userId = userId;
         this.posts = posts;
     }

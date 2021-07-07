@@ -1,7 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.PostDTO;
-import meli.bootcamp.desafio_spring.dtos.SellerPostsResponseDTO;
+import meli.bootcamp.desafio_spring.dtos.UserFollowingPostsDTO;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
@@ -26,9 +26,20 @@ public class PostService {
         this.userService = userService;
     }
 
-    public SellerPostsResponseDTO getFollowerPosts(Long userId) throws ResourceNotFoundException {
+    public UserFollowingPostsDTO getFollowerPosts(Long userId) throws ResourceNotFoundException {
         User user = this.userService.getUserById(userId);
 
+        List<Post> allSellerFollowedPosts = buildFollowingSellersPosts(user);
+
+        List<PostDTO> allSellerFollowedPostsDTO = allSellerFollowedPosts.stream()
+            .map(PostDTO::toDTO)
+            .sorted((post1, post2) -> post2.getDate().compareTo(post1.getDate()))
+            .collect(Collectors.toList());
+
+        return new UserFollowingPostsDTO(userId, allSellerFollowedPostsDTO);
+    }
+
+    private List<Post> buildFollowingSellersPosts(User user) {
         List<Post> allSellerFollowedPosts = new ArrayList<>();
         List<Seller> sellersFollowed = user.getFollowing();
 
@@ -40,10 +51,6 @@ public class PostService {
             allSellerFollowedPosts.addAll(filteredPostsByDate);
         }
 
-        List<PostDTO> allSellerFollowedPostsDTO = allSellerFollowedPosts.stream()
-            .map(post -> PostDTO.toDTO(post))
-            .collect(Collectors.toList());
-
-        return new SellerPostsResponseDTO(userId, allSellerFollowedPostsDTO);
+        return allSellerFollowedPosts;
     }
 }

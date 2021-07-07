@@ -3,6 +3,7 @@ package meli.bootcamp.desafio_spring.entities;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Entity
 public class Post {
@@ -21,8 +22,6 @@ public class Post {
     private LocalDateTime createdAt;
     private BigDecimal price;
 
-    // private Inter quantity ?
-
     @ManyToOne
     @JoinColumn
     private Seller seller;
@@ -33,7 +32,8 @@ public class Post {
     public Post(BigDecimal price, Seller seller) {
         this.price = price;
         this.seller = seller;
-        this.createdAt = LocalDateTime.now();
+        Random random = new Random();
+        this.createdAt = LocalDateTime.now().minusDays(random.nextInt(10));
     }
 
     public Long getId() {

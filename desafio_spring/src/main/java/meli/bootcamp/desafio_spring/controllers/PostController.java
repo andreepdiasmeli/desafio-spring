@@ -1,6 +1,6 @@
 package meli.bootcamp.desafio_spring.controllers;
 
-import meli.bootcamp.desafio_spring.dtos.SellerPostsResponseDTO;
+import meli.bootcamp.desafio_spring.dtos.UserFollowingPostsDTO;
 import meli.bootcamp.desafio_spring.services.PostService;
 
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,8 @@ public class PostController {
     }
 
     @GetMapping("/followed/{userId}/list")
-    public SellerPostsResponseDTO getFollowerPosts(@PathVariable Long userId) {
-        SellerPostsResponseDTO sellerPostsResponseDTO = null;
+    public UserFollowingPostsDTO getFollowerPosts(@PathVariable Long userId) {
+        UserFollowingPostsDTO sellerPostsResponseDTO = null;
         try {
             sellerPostsResponseDTO = this.postService.getFollowerPosts(userId);
         } catch (Exception ex) {
