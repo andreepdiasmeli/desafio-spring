@@ -12,14 +12,14 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
+        this.userService = userService;
     }
 
-    public PromotionalCountDTO getPromotionalCountById(Long userId) {
+    public PromotionalCountDTO getPromotionalCountBySellerId(Long userId) {
         return userService.getPromoProductsCount(userId);
     }
 

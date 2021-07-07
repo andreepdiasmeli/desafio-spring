@@ -22,14 +22,13 @@ public class PostController {
 
 
     @GetMapping("/{userId}/countPromo")
-    public PromotionalCountDTO getPromotionalCountById(@PathVariable Long userId){
-        PromotionalCountDTO promotionalCountDTO = null;
+    public PromotionalCountDTO getPromotionalCountBySellerId(@PathVariable Long userId){
         try {
-            promotionalCountDTO = this.postService.getPromotionalCountById(userId);
+            return this.postService.getPromotionalCountBySellerId(userId);
         } catch (ResourceNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }
-        return promotionalCountDTO;
+
     }
 
 

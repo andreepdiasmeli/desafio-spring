@@ -20,8 +20,12 @@ public class UserService {
     }
 
     public PromotionalCountDTO getPromoProductsCount(Long sellerId){
-        Seller seller = sellerRepository.findById(sellerId).orElseThrow(() ->
-                new ResourceNotFoundException("Seller with id " + sellerId + " was not found."));
+        Seller seller = getSellerById(sellerId);
         return PromotionalCountDTO.toDTO(seller);
+    }
+
+    public Seller getSellerById(Long sellerId) {
+        return sellerRepository.findById(sellerId).orElseThrow(() ->
+                new ResourceNotFoundException("Seller with id " + sellerId + " was not found."));
     }
 }
