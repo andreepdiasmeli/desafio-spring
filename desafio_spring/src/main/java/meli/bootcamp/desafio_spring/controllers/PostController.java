@@ -1,11 +1,13 @@
 package meli.bootcamp.desafio_spring.controllers;
 
+import meli.bootcamp.desafio_spring.dtos.UserFollowingPostsDTO;
+import meli.bootcamp.desafio_spring.services.PostService;
+
+import org.springframework.http.HttpStatus;
 import meli.bootcamp.desafio_spring.dtos.CreatePostDTO;
 import meli.bootcamp.desafio_spring.dtos.PostDTO;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
-import meli.bootcamp.desafio_spring.services.PostService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,18 @@ public class PostController {
         this.postService = postService;
     }
 
+    @GetMapping("/followed/{userId}/list")
+    public UserFollowingPostsDTO getFollowerPosts(@PathVariable Long userId) {
+        UserFollowingPostsDTO sellerPostsResponseDTO = null;
+        try {
+            sellerPostsResponseDTO = this.postService.getFollowerPosts(userId);
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
+
+        return sellerPostsResponseDTO;
+    }
+    
     @GetMapping("/{userId}/countPromo")
     public PromotionalCountDTO getPromotionalCountBySellerId(@PathVariable Long userId){
         try {

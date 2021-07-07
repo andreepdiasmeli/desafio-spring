@@ -21,8 +21,6 @@ public class Post {
     private LocalDateTime createdAt;
     private BigDecimal price;
 
-    // private Inter quantity ?
-
     @ManyToOne
     @JoinColumn
     private Seller seller;

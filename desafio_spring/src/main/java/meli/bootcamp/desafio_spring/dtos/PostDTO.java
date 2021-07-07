@@ -1,62 +1,73 @@
 package meli.bootcamp.desafio_spring.dtos;
 
-import meli.bootcamp.desafio_spring.entities.Post;
-import meli.bootcamp.desafio_spring.entities.Product;
-import meli.bootcamp.desafio_spring.entities.Seller;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import meli.bootcamp.desafio_spring.entities.Post;
 
 public class PostDTO {
-    private Long postId;
-    private ProductDTO product;
-    private LocalDateTime createdAt;
+    
     private Long sellerId;
+    private Long postId;
+    private LocalDate date;
+    private ProductDTO detail;
     private BigDecimal price;
-    public PostDTO() {
-    }
+    private PromotionDTO promotion;
 
-    public PostDTO(Long id, Product product, LocalDateTime createdAt, Long sellerId, BigDecimal price) {
-        this.postId = id;
-        this.product = ProductDTO.toDTO(product);
-        this.createdAt = createdAt;
+
+    public PostDTO() {}
+
+    public PostDTO(
+            Long sellerId,
+            Long postId, 
+            LocalDate date, 
+            ProductDTO detail, 
+            BigDecimal price,
+            PromotionDTO promotion) {
         this.sellerId = sellerId;
+        this.postId = postId;
+        this.date = date;
+        this.detail = detail;
         this.price = price;
+        this.promotion = promotion;
     }
 
-    public static PostDTO toDTO(Post post) {
-        Seller seller = post.getSeller();
-        PostDTO newPostDTO = new PostDTO(
-            post.getId(),
-            post.getProduct(),
-            post.getCreatedAt(),
-            seller.getId(),
-            post.getPrice()
-        );
-        return newPostDTO;
+    public Long getSellerId() {
+        return this.sellerId;
     }
 
-    public Long getSellerPostId() {
-        return sellerId;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public Long getId() {
+    public Long getPostId() {
         return this.postId;
     }
 
-    public ProductDTO getProduct() {
-        return product;
+    public LocalDate getDate() {
+        return this.date;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public ProductDTO getDetail() {
+        return this.detail;
     }
 
-    public Long getSeller() {
-        return sellerId;
+    public BigDecimal getPrice() {
+        return this.price;
     }
+
+    public PromotionDTO getPromotion() {
+        return this.promotion;
+    }
+
+    public static PostDTO toDTO(Post post) {
+        ProductDTO postProductDTO = ProductDTO.toDTO(post.getProduct());
+        PromotionDTO postPromotionDTO = PromotionDTO.toDTO(post.getPromotion());
+
+        return new PostDTO(
+            post.getSeller().getId(), 
+            post.getId(),
+            post.getCreatedAt().toLocalDate(),
+            postProductDTO,
+            post.getPrice(),
+            postPromotionDTO
+        );
+    }
+
 }
