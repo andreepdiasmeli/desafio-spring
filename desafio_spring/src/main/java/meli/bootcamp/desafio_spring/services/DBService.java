@@ -27,6 +27,11 @@ public class DBService {
 
     public void instantiateDB() {
 
+        /*
+        Product -> Seller
+        Seller -> List<Product>
+        * */
+
         Seller seller1 = new Seller("André");
         Seller seller2 = new Seller("Bruno");
         Seller seller3 = new Seller("Gabriel");
@@ -58,6 +63,7 @@ public class DBService {
         Product product3 = new Product("Table", "Office", "MadeiraMadeira", "Dark Wood", "Square");
         Product product4 = new Product("XBOX", "Gamer", "Microsoft", "White", "Much fun");
         Product product5 = new Product("PS5", "Gamer", "Sony", "Black", "Also much fun");
+
 
         product1.setPosts(List.of(post1));
         product2.setPosts(List.of(post2));
@@ -107,11 +113,26 @@ public class DBService {
         seller2.setFollowers(List.of(user1, user2));
         seller3.setFollowers(List.of(user2, user3));
         seller4.setFollowers(List.of(user3, user4));
-        seller5.setFollowers(List.of(user4));
 
         userRepository.saveAll(List.of(user1, user2, user3, user4, user5));
         userRepository.saveAll(List.of(seller1, seller2, seller3, seller4, seller5));
 
+        product1.setSeller(seller1);
+        product2.setSeller(seller2);
+        product3.setSeller(seller3);
+        product4.setSeller(seller4);
+        product5.setSeller(seller5);
+
+        productRepository.saveAll(List.of(product1, product2, product3, product4, product5));
+        seller5.setFollowers(List.of(user4));
+
+        seller1.setProducts(List.of(product1));
+        seller2.setProducts(List.of(product2));
+        seller3.setProducts(List.of(product3));
+        seller4.setProducts(List.of(product4));
+        seller5.setProducts(List.of(product5));
+
+        userRepository.saveAll(List.of(seller1, seller2, seller3, seller4, seller5));
 
 
     }

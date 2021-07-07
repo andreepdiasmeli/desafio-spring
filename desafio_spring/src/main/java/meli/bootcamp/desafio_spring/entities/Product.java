@@ -24,6 +24,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Post> posts = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn
+    private Seller seller;
+
     public Product() {
     }
 
@@ -73,5 +77,9 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 }

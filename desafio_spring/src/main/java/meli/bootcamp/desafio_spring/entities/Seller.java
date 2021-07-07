@@ -7,16 +7,6 @@ import java.util.List;
 @Entity
 public class Seller  extends User{
 
-    /*
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Category> categories = new ArrayList<>();
-    */
-
     @ManyToMany
     @JoinTable(
             name = "follower_following",
@@ -27,6 +17,9 @@ public class Seller  extends User{
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    private List<Product> products;
 
     public Seller() {
     }
@@ -49,5 +42,9 @@ public class Seller  extends User{
 
     public void setFollowers(List<User> followers) {
         this.followers = followers;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }
