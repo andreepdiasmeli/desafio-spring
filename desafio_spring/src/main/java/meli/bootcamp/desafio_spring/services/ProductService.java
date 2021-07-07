@@ -1,5 +1,6 @@
 package meli.bootcamp.desafio_spring.services;
 
+import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,5 +11,9 @@ public class ProductService {
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    public Product getProduct(Long productId) {
+        return this.productRepository.getById(productId);
     }
 }
