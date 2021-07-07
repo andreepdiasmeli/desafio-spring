@@ -18,21 +18,21 @@ public class UserController {
 
     @PostMapping("{userId}/follow/{userIdToFollow}")
     @ResponseStatus(HttpStatus.OK)
-    public void followSeller(@PathVariable Long userId, @PathVariable Long userIdToFollow){
+    public void followSeller(@PathVariable Long userId, @PathVariable(value = "userIdToFollow") Long sellerId){
         try{
-            this.userService.follow(userId,userIdToFollow);
+            this.userService.followSeller(userId,sellerId);
         }catch (ResourceNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @PostMapping("{userId}/unfollow/{userIdToUnfollow}")
     @ResponseStatus(HttpStatus.OK)
-    public void unFollowSeller(@PathVariable Long userId, @PathVariable Long userIdToUnfollow){
+    public void unFollowSeller(@PathVariable Long userId, @PathVariable(value = "userIdToUnfollow" ) Long sellerId){
         try{
-            this.userService.unFollow(userId,userIdToUnfollow);
+            this.userService.unfollowSeller(userId,sellerId);
         } catch (ResourceNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 }
