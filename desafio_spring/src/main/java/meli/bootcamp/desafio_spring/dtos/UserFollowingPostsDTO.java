@@ -1,6 +1,5 @@
 package meli.bootcamp.desafio_spring.dtos;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserFollowingPostsDTO {
