@@ -10,8 +10,8 @@ public class Seller  extends User{
     @ManyToMany
     @JoinTable(
             name = "follower_following",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "seller_id")
+            joinColumns = @JoinColumn(name = "seller_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> followers = new ArrayList<>();
 
@@ -47,4 +47,7 @@ public class Seller  extends User{
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+    public void addFollower(User user){ this.followers.add(user); }
+
 }

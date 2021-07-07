@@ -27,11 +27,6 @@ public class DBService {
 
     public void instantiateDB() {
 
-        /*
-        Product -> Seller
-        Seller -> List<Product>
-        * */
-
         Seller seller1 = new Seller("André");
         Seller seller2 = new Seller("Bruno");
         Seller seller3 = new Seller("Gabriel");

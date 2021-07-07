@@ -37,4 +37,9 @@ public class User {
     public void setFollowing(List<Seller> following) {
         this.following = following;
     }
+
+    public void followSeller(Seller seller){
+        following.add(seller);
+    }
+
 }
