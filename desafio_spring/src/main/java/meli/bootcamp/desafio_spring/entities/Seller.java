@@ -10,8 +10,8 @@ public class Seller  extends User{
     @ManyToMany
     @JoinTable(
             name = "follower_following",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "seller_id")
+            joinColumns = @JoinColumn(name = "seller_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> followers = new ArrayList<>();
 
