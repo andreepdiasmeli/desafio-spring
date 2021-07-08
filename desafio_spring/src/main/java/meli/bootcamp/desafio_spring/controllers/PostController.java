@@ -1,17 +1,14 @@
 package meli.bootcamp.desafio_spring.controllers;
 
 import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.services.PostService;
 
 import org.springframework.http.HttpStatus;
-import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.security.InvalidParameterException;
 
 @RestController
 @RequestMapping("/products")
@@ -24,10 +21,12 @@ public class PostController {
     }
 
     @GetMapping("/followed/{userId}/list")
-    public UserFollowingPostsDTO getFollowerPosts(@PathVariable Long userId) {
+    public UserFollowingPostsDTO getFollowerPosts(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String order) {
         UserFollowingPostsDTO sellerPostsResponseDTO = null;
         try {
-            sellerPostsResponseDTO = this.postService.getFollowerPosts(userId);
+            sellerPostsResponseDTO = this.postService.getFollowerPosts(userId, order);
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
@@ -62,6 +61,20 @@ public class PostController {
             result = this.postService.createPost(createPost);
         } catch (ResourceNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        }
+        return result;
+    }
+
+    @PostMapping("newpromopost")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PostDTO createPromotion(@RequestBody CreatePromotionalPostDTO createPromotionalPost) {
+        PostDTO result;
+        try {
+            result = this.postService.createPost(createPromotionalPost);
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        } catch (InvalidParameterException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
         return result;
     }

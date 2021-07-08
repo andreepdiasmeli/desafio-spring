@@ -9,6 +9,8 @@ public class Seller  extends User{
 
     @ManyToMany
     @JoinTable(
+            uniqueConstraints = {
+                    @UniqueConstraint(columnNames = { "seller_id", "user_id" })},
             name = "follower_following",
             joinColumns = @JoinColumn(name = "seller_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
@@ -48,5 +50,9 @@ public class Seller  extends User{
     }
 
     public void addFollower(User user){ this.followers.add(user); }
+
+    public void removeFollower(User user){
+        this.followers.remove(user);
+    }
 
 }

@@ -23,6 +23,7 @@ public class Promotion {
         this.discount = discount;
         this.expiresAt = expiresAt;
         this.post = post;
+        post.setPromotion(this);
     }
 
     public Long getId() {
