@@ -61,29 +61,42 @@ public class PostService {
         return allSellerFollowedPosts;
     }
 
-    public PostDTO createPost(CreatePostDTO createPost) throws ResourceNotFoundException, InvalidParameterException {
-        Seller seller = this.userService.getSellerById(createPost.getUserId());
-        Product product = this.productService.getProductById(createPost.getProductId());
-        return this.initPost(createPost.getPrice(), seller, product, null);
-    }
-
     public PromotionalCountDTO getPromotionalCountBySellerId(Long userId) {
         return userService.getPromoProductsCount(userId);
     }
 
-    public PostDTO createPost(CreatePromotionalPostDTO createPromotionalPost) throws ResourceNotFoundException,
-            InvalidParameterException {
-        Seller seller = this.userService.getSellerById(createPromotionalPost.getUserId());
-        Product product = this.productService.getProductById(createPromotionalPost.getProductId());
-        return this.initPost(createPromotionalPost.getPrice(), seller, product, createPromotionalPost.getPromotion());
+    public PostDTO createPost(CreatePostDTO createPost) throws ResourceNotFoundException, InvalidParameterException {
+        return this.createPost(
+                createPost.getPrice(),
+                createPost.getUserId(),
+                createPost.getProductId(),
+                null
+        );
     }
 
-    private PostDTO initPost(BigDecimal price, Seller seller, Product product, CreatePromotionDTO createPromotion)
+    public PostDTO createPost(CreatePromotionalPostDTO createPromotionalPost) throws ResourceNotFoundException,
+            InvalidParameterException {
+        return this.createPost(
+                createPromotionalPost.getPrice(),
+                createPromotionalPost.getUserId(),
+                createPromotionalPost.getProductId(),
+                createPromotionalPost.getPromotion()
+        );
+    }
+
+    public PostDTO createPost(BigDecimal price, Long sellerId, Long productId, CreatePromotionDTO createPromotion)
+            throws ResourceNotFoundException, InvalidParameterException {
+        Seller seller = this.userService.getSellerById(sellerId);
+        Product product = this.productService.getProductById(productId);
+        Post newPost = this.buildPost(price, seller, product, createPromotion);
+        return PostDTO.toDTO(newPost);
+    }
+
+    private Post buildPost(BigDecimal price, Seller seller, Product product, CreatePromotionDTO createPromotion)
             throws InvalidParameterException {
         Post newPost = new Post(price, seller, product);
         if (!Objects.isNull(createPromotion))
             this.promotionService.createPromotion(createPromotion, newPost);
-        this.postRepository.save(newPost);
-        return PostDTO.toDTO(newPost);
+        return this.postRepository.save(newPost);
     }
 }

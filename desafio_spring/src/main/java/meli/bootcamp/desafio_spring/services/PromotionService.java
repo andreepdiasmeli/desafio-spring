@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class PromotionService {
@@ -20,20 +21,29 @@ public class PromotionService {
         this.promotionRepository = promotionRepository;
     }
 
-    public PromotionDTO createPromotion(CreatePromotionDTO createPromotion, Post post) throws InvalidParameterException {
+    public PromotionDTO createPromotion(CreatePromotionDTO createPromotion, Post post)
+            throws InvalidParameterException {
+        Optional<InvalidParameterException> ex = validatePromotion(createPromotion);
+        if (ex.isPresent()) {
+            throw ex.get();
+        }
+        Promotion promo = new Promotion(createPromotion.getDiscount(), createPromotion.getExpiresAt(), post);
+        return PromotionDTO.toDTO(promo);
+    }
+
+    private Optional<InvalidParameterException> validatePromotion(CreatePromotionDTO createPromotion) {
         BigDecimal discount = createPromotion.getDiscount();
         LocalDateTime expiresAt = createPromotion.getExpiresAt();
+        InvalidParameterException ex = null;
         if (this.checkIfDiscountInRange(discount)) {
-            throw new InvalidParameterException("Discount value " +
+            ex = new InvalidParameterException("Discount value " +
                     discount.doubleValue() +
                     " is outside the valid range (0 > discount <= 1).");
         }
         if(expiresAt.isBefore(LocalDateTime.now())){
-            throw new InvalidParameterException("Expiration date for a promotion cannot be earlier than now.");
+            ex = new InvalidParameterException("Expiration date for a promotion cannot be earlier than now.");
         }
-        Promotion promo = new Promotion(discount, expiresAt, post);
-        post.setPromotion(promo);
-        return PromotionDTO.toDTO(promo);
+        return Optional.ofNullable(ex);
     }
 
     private boolean checkIfDiscountInRange(BigDecimal discount) {
