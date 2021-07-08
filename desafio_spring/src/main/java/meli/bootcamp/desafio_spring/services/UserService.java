@@ -73,7 +73,7 @@ public class UserService {
         }
     }
 
-    public void unFollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException{
+    public void unfollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException{
 
         User user = this.userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
@@ -84,7 +84,7 @@ public class UserService {
         );
 
         user.unfollowSeller(seller);
-        seller.removeFollower(user);
+
 
         this.userRepository.save(user);
         this.sellerRepository.save(seller);

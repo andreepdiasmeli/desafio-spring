@@ -72,7 +72,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void unFollowSeller(@PathVariable Long userId, @PathVariable(value = "userIdToUnfollow" ) Long sellerId){
         try{
-            this.userService.unFollowSeller(userId,sellerId);
+            this.userService.unfollowSeller(userId,sellerId);
         } catch (ResourceNotFoundException e){
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
