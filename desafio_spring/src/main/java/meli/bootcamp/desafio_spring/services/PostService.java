@@ -1,34 +1,33 @@
 package meli.bootcamp.desafio_spring.services;
 
-import meli.bootcamp.desafio_spring.dtos.PostDTO;
-import meli.bootcamp.desafio_spring.dtos.UserFollowingPostsDTO;
+import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.entities.*;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
-import meli.bootcamp.desafio_spring.entities.Post;
-import meli.bootcamp.desafio_spring.entities.Seller;
-import meli.bootcamp.desafio_spring.entities.User;
-import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
-import meli.bootcamp.desafio_spring.dtos.CreatePostDTO;
-import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.stereotype.Service;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
+    private final PromotionService promotionService;
     private final PostRepository postRepository;
     private final ProductService productService;
     private final UserService userService;
 
     public PostService(
+            PromotionService promotionService,
             PostRepository postRepository, 
             ProductService productService, 
             UserService userService) {
+        this.promotionService = promotionService;
         this.postRepository = postRepository;
         this.userService = userService;
         this.productService = productService;
@@ -62,18 +61,29 @@ public class PostService {
         return allSellerFollowedPosts;
     }
 
-    public PostDTO createPost(CreatePostDTO createPost) throws ResourceNotFoundException {
+    public PostDTO createPost(CreatePostDTO createPost) throws ResourceNotFoundException, InvalidParameterException {
         Seller seller = this.userService.getSellerById(createPost.getUserId());
         Product product = this.productService.getProductById(createPost.getProductId());
-        Post newPost = new Post(createPost.getPrice(), seller, product);
-
-        this.postRepository.save(newPost);
-        
-        return PostDTO.toDTO(newPost);
+        return this.initPost(createPost.getPrice(), seller, product, null);
     }
 
     public PromotionalCountDTO getPromotionalCountBySellerId(Long userId) {
         return userService.getPromoProductsCount(userId);
     }
 
+    public PostDTO createPost(CreatePromotionalPostDTO createPromotionalPost) throws ResourceNotFoundException,
+            InvalidParameterException {
+        Seller seller = this.userService.getSellerById(createPromotionalPost.getUserId());
+        Product product = this.productService.getProductById(createPromotionalPost.getProductId());
+        return this.initPost(createPromotionalPost.getPrice(), seller, product, createPromotionalPost.getPromotion());
+    }
+
+    private PostDTO initPost(BigDecimal price, Seller seller, Product product, CreatePromotionDTO createPromotion)
+            throws InvalidParameterException {
+        Post newPost = new Post(price, seller, product);
+        if (!Objects.isNull(createPromotion))
+            this.promotionService.createPromotion(createPromotion, newPost);
+        this.postRepository.save(newPost);
+        return PostDTO.toDTO(newPost);
+    }
 }
