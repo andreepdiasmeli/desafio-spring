@@ -35,7 +35,7 @@ public class PostController {
         try {
             sellerPostsResponseDTO = this.postService.getFollowerPosts(userId, order);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
 
         return sellerPostsResponseDTO;
@@ -46,7 +46,7 @@ public class PostController {
         try {
             return this.postService.getPromotionalCountBySellerId(userId);
         } catch (ResourceNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
 
     }
@@ -57,7 +57,7 @@ public class PostController {
         try {
             result = this.postService.createPost(createPost);
         } catch (ResourceNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
         return result;
     }
