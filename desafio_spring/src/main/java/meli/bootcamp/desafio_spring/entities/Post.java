@@ -21,8 +21,6 @@ public class Post {
     private LocalDateTime createdAt;
     private BigDecimal price;
 
-    // private Inter quantity ?
-
     @ManyToOne
     @JoinColumn
     private Seller seller;
@@ -33,6 +31,13 @@ public class Post {
     public Post(BigDecimal price, Seller seller) {
         this.price = price;
         this.seller = seller;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Post(BigDecimal price, Seller seller, Product product) {
+        this.price = price;
+        this.seller = seller;
+        this.product = product;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -68,3 +73,4 @@ public class Post {
         this.product = product;
     }
 }
+
