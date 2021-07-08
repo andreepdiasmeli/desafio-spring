@@ -79,9 +79,9 @@ public class UserService {
     }
 
     public Sort getSortByParamName(String paramName){
-        if("name_asc".equals(paramName)){
+        if("name_asc".equalsIgnoreCase(paramName)){
             return sortByNameAsc();
-        }else if("name_desc".equals(paramName)){
+        }else if("name_desc".equalsIgnoreCase(paramName)){
             return sortByNameDesc();
         }
         return null;
