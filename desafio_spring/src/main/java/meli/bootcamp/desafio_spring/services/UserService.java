@@ -53,7 +53,7 @@ public class UserService {
                 new ResourceNotFoundException("User with id " + userId + " was not found."));
     }
 
-    public void followSeller(Long userId, Long sellerId){
+    public void followSeller(Long userId, Long sellerId) throws ResourceNotFoundException, DuplicatedResouceException {
         User user = this.userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
         );
@@ -73,7 +73,7 @@ public class UserService {
         }
     }
 
-    public void unFollowSeller(Long userId, Long sellerId){
+    public void unFollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException{
 
         User user = this.userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
