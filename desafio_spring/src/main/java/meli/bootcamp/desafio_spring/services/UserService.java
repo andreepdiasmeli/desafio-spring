@@ -6,10 +6,12 @@ import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
 import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
+import meli.bootcamp.desafio_spring.exceptions.DuplicatedResouceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.repositories.UserRepository;
 import org.springframework.data.domain.Sort;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,7 +64,7 @@ public class UserService {
                 new ResourceNotFoundException("User with id " + userId + " was not found."));
     }
 
-    public void followSeller(Long userId, Long sellerId){
+    public void followSeller(Long userId, Long sellerId) throws ResourceNotFoundException, DuplicatedResouceException {
         User user = this.userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
         );
@@ -73,6 +75,27 @@ public class UserService {
 
         user.followSeller(seller);
         seller.addFollower(user);
+
+        try{
+            this.userRepository.save(user);
+            this.sellerRepository.save(seller);
+        } catch (DataIntegrityViolationException e){
+            throw new DuplicatedResouceException("The user with id " + userId + " already follows the seller " + sellerId);
+        }
+    }
+
+    public void unfollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException{
+
+        User user = this.userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
+        );
+
+        Seller seller = this.sellerRepository.findById(sellerId).orElseThrow(() ->
+                new ResourceNotFoundException("The seller with id " + sellerId + " doesn't exist.")
+        );
+
+        user.unfollowSeller(seller);
+
 
         this.userRepository.save(user);
         this.sellerRepository.save(seller);

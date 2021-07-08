@@ -41,4 +41,9 @@ public class User {
         following.add(seller);
     }
 
+    public void unfollowSeller(Seller seller) {
+        following.remove(seller);
+        seller.getFollowers().remove(this);
+    }
+
 }
