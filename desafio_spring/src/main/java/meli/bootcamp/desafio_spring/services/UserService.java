@@ -1,9 +1,6 @@
 package meli.bootcamp.desafio_spring.services;
 
-import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
-import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
-import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
-import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
+import meli.bootcamp.desafio_spring.dtos.*;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResouceException;
@@ -54,7 +51,7 @@ public class UserService {
         return FollowingDTO.toDTO(user, following);
     }
 
-    public PromotionalCountDTO getPromoProductsCount(Long sellerId){
+    public PromotionalCountDTO getPromoProductsCount(Long sellerId) throws ResourceNotFoundException {
         Seller seller = getSellerById(sellerId);
         return PromotionalCountDTO.toDTO(seller);
     }
@@ -99,6 +96,11 @@ public class UserService {
 
         this.userRepository.save(user);
         this.sellerRepository.save(seller);
+    }
+
+    public SellerPromotionalPostsDTO getPromotionalPosts(Long sellerId) {
+        Seller seller = getSellerById(sellerId);
+        return SellerPromotionalPostsDTO.toDTO(seller);
     }
 
     public Sort getSortByParamName(String paramName){

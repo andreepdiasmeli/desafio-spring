@@ -1,8 +1,13 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
-import meli.bootcamp.desafio_spring.entities.*;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
+import meli.bootcamp.desafio_spring.entities.Post;
+import meli.bootcamp.desafio_spring.entities.Seller;
+import meli.bootcamp.desafio_spring.entities.User;
+import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
+import meli.bootcamp.desafio_spring.dtos.CreatePostDTO;
+import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +30,7 @@ public class PostService {
 
     public PostService(
             PromotionService promotionService,
-            PostRepository postRepository, 
+            PostRepository postRepository,
             ProductService productService, 
             UserService userService) {
         this.promotionService = promotionService;
@@ -108,5 +113,8 @@ public class PostService {
         if (!Objects.isNull(createPromotion))
             this.promotionService.createPromotion(createPromotion, newPost);
         return this.postRepository.save(newPost);
+    }
+    public SellerPromotionalPostsDTO getPromotionalPosts(Long userId) {
+        return userService.getPromotionalPosts(userId);
     }
 }
