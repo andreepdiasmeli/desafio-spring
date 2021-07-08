@@ -5,7 +5,10 @@ import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
+import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
+import meli.bootcamp.desafio_spring.util.SortUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,21 +43,21 @@ public class PostService {
 
         List<Post> allSellerFollowedPosts = buildFollowingSellersPosts(user);
 
-        Comparator<PostDTO> dateComparator = getDateComparator(order);
+        Comparator<Post> dateComparator = getDateComparator(order);
 
         List<PostDTO> allSellerFollowedPostsDTO = allSellerFollowedPosts.stream()
-            .map(PostDTO::toDTO)
             .sorted(dateComparator)
+            .map(PostDTO::toDTO)
             .collect(Collectors.toList());
 
         return new UserFollowingPostsDTO(userId, allSellerFollowedPostsDTO);
     }
 
-    private Comparator<PostDTO> getDateComparator(String order) {
+    private Comparator<Post> getDateComparator(String order) {
         if (order != null && !order.isEmpty() && order.equalsIgnoreCase("date_asc"))
-            return (post1, post2) -> post1.getDate().compareTo(post2.getDate());
+            return (post1, post2) -> post1.getCreatedAt().compareTo(post2.getCreatedAt());
 
-        return (post1, post2) -> post2.getDate().compareTo(post1.getDate());
+        return (post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt());
     }
 
     private List<Post> buildFollowingSellersPosts(User user) {
@@ -109,5 +112,18 @@ public class PostService {
 
     public SellerPromotionalPostsDTO getPromotionalPosts(Long userId) {
         return userService.getPromotionalPosts(userId);
+    }
+
+    public PostDTO getPostById(Long postId) {
+        Post post = this.postRepository.findById(postId).orElseThrow(() ->
+                new ResourceNotFoundException("Post with " + postId + " does not exist."));
+        return PostDTO.toDTO(post);
+    }
+
+    public List<PostDTO> getAllPosts(String order) {
+        Sort sorter = SortUtils.getPostSorterOf(order);
+        List<Post> allPosts = Objects.isNull(sorter) ? this.postRepository.findAll() :
+                                                       this.postRepository.findAll(sorter);
+        return allPosts.stream().map(PostDTO::toDTO).collect(Collectors.toList());
     }
 }

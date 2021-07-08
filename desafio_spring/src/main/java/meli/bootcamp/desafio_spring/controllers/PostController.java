@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -32,6 +33,17 @@ public class PostController {
     @GetMapping("/{userId}/list")
     public SellerPromotionalPostsDTO getPromotionalPosts(@PathVariable Long userId){
         return this.postService.getPromotionalPosts(userId);
+    }
+
+    @GetMapping("/posts")
+    public List<PostDTO> getAllPosts(@RequestParam(required = false) String order) {
+        return this.postService.getAllPosts(order);
+    }
+
+    @GetMapping("/posts/{postId}")
+    public PostDTO getPostById(
+            @PathVariable Long postId) {
+        return this.postService.getPostById(postId);
     }
 
     @PostMapping("newpost")

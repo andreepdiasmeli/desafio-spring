@@ -7,6 +7,7 @@ import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.repositories.UserRepository;
+import meli.bootcamp.desafio_spring.util.SortUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class UserService {
     public FollowersDTO getFollowers(Long sellerId, String orderParam) {
         Seller seller = getSellerById(sellerId);
 
-        Sort sort = getSortByParamName(orderParam);
+        Sort sort = SortUtils.getUserSorterOf(orderParam);//getSortByParamName(orderParam);
         List<User> followers = userRepository.findAllByFollowing_Id(sellerId, sort);
 
         return FollowersDTO.toDTO(seller, followers);
@@ -45,7 +46,7 @@ public class UserService {
     public FollowingDTO getFollowing(Long userId, String orderParam) {
         User user = getUserById(userId);
 
-        Sort sort = getSortByParamName(orderParam);
+        Sort sort = SortUtils.getUserSorterOf(orderParam);//getSortByParamName(orderParam);
         List<Seller> following = sellerRepository.findAllByFollowers_Id(userId, sort);
 
         return FollowingDTO.toDTO(user, following);
@@ -96,22 +97,4 @@ public class UserService {
         Seller seller = getSellerById(sellerId);
         return SellerPromotionalPostsDTO.toDTO(seller);
     }
-
-    public Sort getSortByParamName(String paramName){
-        if("name_asc".equalsIgnoreCase(paramName)){
-            return sortByNameAsc();
-        }else if("name_desc".equalsIgnoreCase(paramName)){
-            return sortByNameDesc();
-        }
-        return null;
-    }
-
-    private Sort sortByNameAsc() {
-        return Sort.by(Sort.Direction.ASC, "username");
-    }
-
-    private Sort sortByNameDesc() {
-        return Sort.by(Sort.Direction.DESC, "username");
-    }
-
 }
