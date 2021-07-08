@@ -3,6 +3,7 @@ package meli.bootcamp.desafio_spring.dtos;
 import java.math.BigDecimal;
 
 public class CreatePostDTO {
+
     private Long userId;
     private Long productId;
     private BigDecimal price;

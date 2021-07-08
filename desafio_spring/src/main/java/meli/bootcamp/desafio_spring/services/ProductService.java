@@ -15,9 +15,8 @@ public class ProductService {
     }
 
     public Product getProductById(Long productId) throws ResourceNotFoundException {
-        Product product = productRepository.findById(productId).orElseThrow(() ->
+        return productRepository.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product " + productId + " does not exist.")
         );
-        return product;
     }
 }

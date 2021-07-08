@@ -21,29 +21,30 @@ public class PromotionService {
         this.promotionRepository = promotionRepository;
     }
 
-    public PromotionDTO createPromotion(CreatePromotionDTO createPromotion, Post post)
-            throws InvalidParameterException {
-        Optional<InvalidParameterException> ex = validatePromotion(createPromotion);
-        if (ex.isPresent()) {
-            throw ex.get();
+    public PromotionDTO createPromotion(CreatePromotionDTO createPromotion, Post post) {
+
+        Optional<RuntimeException> exception = validatePromotion(createPromotion);
+        if (exception.isPresent()) {
+            throw exception.get();
         }
-        Promotion promo = new Promotion(createPromotion.getDiscount(), createPromotion.getExpiresAt(), post);
-        return PromotionDTO.toDTO(promo);
+
+        Promotion promotion = new Promotion(createPromotion.getDiscount(), createPromotion.getExpiresAt(), post);
+        return PromotionDTO.toDTO(promotion);
     }
 
-    private Optional<InvalidParameterException> validatePromotion(CreatePromotionDTO createPromotion) {
+    private Optional<RuntimeException> validatePromotion(CreatePromotionDTO createPromotion) {
         BigDecimal discount = createPromotion.getDiscount();
         LocalDateTime expiresAt = createPromotion.getExpiresAt();
-        InvalidParameterException ex = null;
+
+        InvalidParameterException exception = null;
+
         if (this.checkIfDiscountInRange(discount)) {
-            ex = new InvalidParameterException("Discount value " +
-                    discount.doubleValue() +
-                    " is outside the valid range (0 > discount <= 1).");
+            exception = new InvalidParameterException("Discount value " + discount.doubleValue() + " is outside the valid range (0 > discount <= 1).");
         }
         if(expiresAt.isBefore(LocalDateTime.now())){
-            ex = new InvalidParameterException("Expiration date for a promotion cannot be earlier than now.");
+            exception = new InvalidParameterException("Expiration date for a promotion cannot be earlier than now.");
         }
-        return Optional.ofNullable(ex);
+        return Optional.ofNullable(exception);
     }
 
     private boolean checkIfDiscountInRange(BigDecimal discount) {

@@ -3,16 +3,8 @@ package meli.bootcamp.desafio_spring.controllers;
 import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
 import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
 import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
-import meli.bootcamp.desafio_spring.exceptions.DuplicatedResouceException;
-import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.services.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController()
@@ -27,60 +19,30 @@ public class UserController {
 
     @GetMapping("{userId}/followers/count")
     public FollowerCountDTO getFollowersCount(@PathVariable(value = "userId") Long sellerId){
-        FollowerCountDTO followerCountDTO = null;
-        try{
-            followerCountDTO = userService.getFollowersCount(sellerId);
-        }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
-        }
-        return followerCountDTO;
+        return userService.getFollowersCount(sellerId);
     }
 
     @GetMapping("{userId}/followers/list")
     public FollowersDTO getFollowers(
             @PathVariable(value = "userId") Long sellerId,
             @RequestParam(required = false) String order){
-
-        FollowersDTO followersDTO = null;
-        try{
-            followersDTO = userService.getFollowers(sellerId, order);
-        }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
-        }
-        return followersDTO;
+        return userService.getFollowers(sellerId, order);
     }
 
     @GetMapping("/{userId}/followed/list")
     public FollowingDTO getFollowing(
             @PathVariable Long userId,
             @RequestParam(required = false) String order){
-
-        FollowingDTO followingDTO = null;
-        try{
-            followingDTO = userService.getFollowing(userId, order);
-        }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
-        }
-        return followingDTO;
+        return userService.getFollowing(userId, order);
     }
 
     @PostMapping("{userId}/follow/{userIdToFollow}")
-    @ResponseStatus(HttpStatus.OK)
     public void followSeller(@PathVariable Long userId, @PathVariable(value = "userIdToFollow") Long sellerId){
-        try{
-            this.userService.followSeller(userId,sellerId);
-        }catch (ResourceNotFoundException | DuplicatedResouceException e){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
+        this.userService.followSeller(userId,sellerId);
     }
 
     @PostMapping("{userId}/unfollow/{userIdToUnfollow}")
-    @ResponseStatus(HttpStatus.OK)
-    public void unFollowSeller(@PathVariable Long userId, @PathVariable(value = "userIdToUnfollow" ) Long sellerId){
-        try{
-            this.userService.unfollowSeller(userId,sellerId);
-        } catch (ResourceNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
+    public void unfollowSeller(@PathVariable Long userId, @PathVariable(value = "userIdToUnfollow" ) Long sellerId) {
+        this.userService.unfollowSeller(userId, sellerId);
     }
 }
