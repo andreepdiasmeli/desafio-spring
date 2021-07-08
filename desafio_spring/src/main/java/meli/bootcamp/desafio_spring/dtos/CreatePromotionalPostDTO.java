@@ -1,13 +1,20 @@
 package meli.bootcamp.desafio_spring.dtos;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class CreatePromotionalPostDTO {
-    private Long userId;
-    private Long productId;
-    private BigDecimal price;
-    private CreatePromotionDTO promotion;
 
+    @NotNull
+    private Long userId;
+    @NotNull
+    private Long productId;
+    @NotNull @Positive
+    private BigDecimal price;
+    @NotNull @Valid
+    private CreatePromotionDTO promotion;
 
     public CreatePromotionalPostDTO() {
     }

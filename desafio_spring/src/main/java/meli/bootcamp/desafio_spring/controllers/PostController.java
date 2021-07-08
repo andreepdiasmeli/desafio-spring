@@ -5,6 +5,8 @@ import meli.bootcamp.desafio_spring.services.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/products")
 public class PostController {
@@ -34,13 +36,13 @@ public class PostController {
 
     @PostMapping("newpost")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDTO createPost(@RequestBody CreatePostDTO createPost) {
+    public PostDTO createPost(@RequestBody @Valid CreatePostDTO createPost) {
         return this.postService.createPost(createPost);
     }
 
     @PostMapping("newpromopost")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDTO createPromotion(@RequestBody CreatePromotionalPostDTO createPromotionalPost) {
+    public PostDTO createPromotion(@RequestBody @Valid CreatePromotionalPostDTO createPromotionalPost) {
         return this.postService.createPost(createPromotionalPost);
     }
 }
