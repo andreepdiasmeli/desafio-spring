@@ -2,6 +2,7 @@ package meli.bootcamp.desafio_spring.controllers;
 
 import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
 import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
+import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -29,20 +30,37 @@ public class UserController {
         try{
             followerCountDTO = userService.getFollowersCount(sellerId);
         }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
         return followerCountDTO;
     }
 
     @GetMapping("{userId}/followers/list")
-    public FollowersDTO getFollowers(@PathVariable(value = "userId") Long sellerId){
+    public FollowersDTO getFollowers(
+            @PathVariable(value = "userId") Long sellerId,
+            @RequestParam(required = false) String order){
+
         FollowersDTO followersDTO = null;
         try{
-            followersDTO = userService.getFollowers(sellerId);
+            followersDTO = userService.getFollowers(sellerId, order);
         }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
         return followersDTO;
+    }
+
+    @GetMapping("/{userId}/followed/list")
+    public FollowingDTO getFollowing(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String order){
+
+        FollowingDTO followingDTO = null;
+        try{
+            followingDTO = userService.getFollowing(userId, order);
+        }catch (ResourceNotFoundException ex){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        }
+        return followingDTO;
     }
 
     @PostMapping("{userId}/follow/{userIdToFollow}")
@@ -51,7 +69,7 @@ public class UserController {
         try{
             this.userService.followSeller(userId,sellerId);
         }catch (ResourceNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
     }
 }

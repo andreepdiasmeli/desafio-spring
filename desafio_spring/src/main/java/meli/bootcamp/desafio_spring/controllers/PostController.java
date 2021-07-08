@@ -20,12 +20,14 @@ public class PostController {
     }
 
     @GetMapping("/followed/{userId}/list")
-    public UserFollowingPostsDTO getFollowerPosts(@PathVariable Long userId) {
+    public UserFollowingPostsDTO getFollowerPosts(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String order) {
         UserFollowingPostsDTO sellerPostsResponseDTO = null;
         try {
-            sellerPostsResponseDTO = this.postService.getFollowerPosts(userId);
+            sellerPostsResponseDTO = this.postService.getFollowerPosts(userId, order);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
 
         return sellerPostsResponseDTO;
@@ -36,7 +38,7 @@ public class PostController {
         try {
             return this.postService.getPromotionalCountBySellerId(userId);
         } catch (ResourceNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
 
     }
@@ -47,13 +49,13 @@ public class PostController {
         try {
             result = this.postService.createPost(createPost);
         } catch (ResourceNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
         return result;
     }
 
     @PostMapping("newpromopost")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public PostDTO createPromotion(@RequestBody CreatePromotionalPostDTO createPromotionalPost) {
         PostDTO result;
         try {

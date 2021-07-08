@@ -1,14 +1,18 @@
 package meli.bootcamp.desafio_spring.services;
 
+import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
+import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
+import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
+import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
-import meli.bootcamp.desafio_spring.repositories.SellerRepository;;
-import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
-import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
-import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
+import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.repositories.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -30,9 +34,22 @@ public class UserService {
         return FollowerCountDTO.toDTO(seller);
     }
 
-    public FollowersDTO getFollowers(Long sellerId) throws ResourceNotFoundException {
+    public FollowersDTO getFollowers(Long sellerId, String orderParam) throws ResourceNotFoundException {
         Seller seller = getSellerById(sellerId);
-        return FollowersDTO.toDTO(seller);
+
+        Sort sort = getSortByParamName(orderParam);
+        List<User> followers = userRepository.findAllByFollowing_Id(sellerId, sort);
+
+        return FollowersDTO.toDTO(seller, followers);
+    }
+
+    public FollowingDTO getFollowing(Long userId, String orderParam) throws ResourceNotFoundException{
+        User user = getUserById(userId);
+
+        Sort sort = getSortByParamName(orderParam);
+        List<Seller> following = sellerRepository.findAllByFollowers_Id(userId, sort);
+
+        return FollowingDTO.toDTO(user, following);
     }
 
     public PromotionalCountDTO getPromoProductsCount(Long sellerId){
@@ -59,6 +76,23 @@ public class UserService {
 
         this.userRepository.save(user);
         this.sellerRepository.save(seller);
+    }
+
+    public Sort getSortByParamName(String paramName){
+        if("name_asc".equalsIgnoreCase(paramName)){
+            return sortByNameAsc();
+        }else if("name_desc".equalsIgnoreCase(paramName)){
+            return sortByNameDesc();
+        }
+        return null;
+    }
+
+    private Sort sortByNameAsc() {
+        return Sort.by(Sort.Direction.ASC, "username");
+    }
+
+    private Sort sortByNameDesc() {
+        return Sort.by(Sort.Direction.DESC, "username");
     }
 
 }
