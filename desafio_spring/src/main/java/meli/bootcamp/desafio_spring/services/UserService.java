@@ -3,7 +3,7 @@ package meli.bootcamp.desafio_spring.services;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
-import meli.bootcamp.desafio_spring.repositories.SellerRepository;;
+import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
 import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
 import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
