@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.dtos;
 
 import meli.bootcamp.desafio_spring.entities.Seller;
+import meli.bootcamp.desafio_spring.entities.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +22,9 @@ public class FollowersDTO {
     }
 
 
-    public static FollowersDTO toDTO(Seller seller){
-        List<UserDTO> followers = seller.getFollowers().stream().map(UserDTO::toDTO).collect(Collectors.toList());
-        return new FollowersDTO(seller.getId(), seller.getUsername(), followers);
+    public static FollowersDTO  toDTO(Seller seller, List<User> followers){
+        List<UserDTO> followersDTO = followers.stream().map(UserDTO::toDTO).collect(Collectors.toList());
+        return new FollowersDTO(seller.getId(), seller.getUsername(), followersDTO);
     }
 
     public Long getUserId() {
