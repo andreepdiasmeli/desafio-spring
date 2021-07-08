@@ -6,9 +6,11 @@ import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
 import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
+import meli.bootcamp.desafio_spring.exceptions.DuplicatedResouceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.repositories.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -62,6 +64,27 @@ public class UserService {
 
         user.followSeller(seller);
         seller.addFollower(user);
+
+        try{
+            this.userRepository.save(user);
+            this.sellerRepository.save(seller);
+        } catch (DataIntegrityViolationException e){
+            throw new DuplicatedResouceException("The user with id " + userId + " already follows the seller " + sellerId);
+        }
+    }
+
+    public void unFollowSeller(Long userId, Long sellerId){
+
+        User user = this.userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("The user with id " + userId + " doesn't exist.")
+        );
+
+        Seller seller = this.sellerRepository.findById(sellerId).orElseThrow(() ->
+                new ResourceNotFoundException("The seller with id " + sellerId + " doesn't exist.")
+        );
+
+        user.unfollowSeller(seller);
+        seller.removeFollower(user);
 
         this.userRepository.save(user);
         this.sellerRepository.save(seller);
