@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @Service
 public class UserService {
@@ -92,9 +96,9 @@ public class UserService {
         this.sellerRepository.save(seller);
     }
 
-    public SellerPromotionalPostsDTO getPromotionalPosts(Long sellerId) {
+    public SellerPostsDTO getPosts(Long sellerId, boolean isPromo) {
         Seller seller = getSellerById(sellerId);
-        return SellerPromotionalPostsDTO.toDTO(seller);
+        return SellerPostsDTO.toDTO(seller, getPromotionalPostFilter(isPromo));
     }
 
     public Sort getSortByParamName(String paramName){
@@ -106,6 +110,15 @@ public class UserService {
         return null;
     }
 
+    public Predicate<Post> getPromotionalPostFilter (boolean isPromo) {
+        Predicate<Post> predicate = p -> true;
+        if (isPromo) {
+            predicate = p -> Objects.nonNull(p.getPromotion());
+        }
+        return predicate;
+
+    }
+
     private Sort sortByNameAsc() {
         return Sort.by(Sort.Direction.ASC, "username");
     }
@@ -113,5 +126,7 @@ public class UserService {
     private Sort sortByNameDesc() {
         return Sort.by(Sort.Direction.DESC, "username");
     }
+
+
 
 }

@@ -107,7 +107,8 @@ public class PostService {
         return this.postRepository.save(newPost);
     }
 
-    public SellerPromotionalPostsDTO getPromotionalPosts(Long userId) {
-        return userService.getPromotionalPosts(userId);
+    public SellerPostsDTO getPosts(Long userId, boolean isPromo) {
+        return userService.getPosts(userId, isPromo);
     }
+
 }
