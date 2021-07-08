@@ -1,13 +1,10 @@
 package meli.bootcamp.desafio_spring.controllers;
 
-import meli.bootcamp.desafio_spring.dtos.UserFollowingPostsDTO;
+import meli.bootcamp.desafio_spring.dtos.*;
 import meli.bootcamp.desafio_spring.services.PostService;
 
 import org.springframework.http.HttpStatus;
-import meli.bootcamp.desafio_spring.dtos.CreatePostDTO;
-import meli.bootcamp.desafio_spring.dtos.PostDTO;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
-import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +39,16 @@ public class PostController {
     public PromotionalCountDTO getPromotionalCountBySellerId(@PathVariable Long userId){
         try {
             return this.postService.getPromotionalCountBySellerId(userId);
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        }
+
+    }
+
+    @GetMapping("/{userId}/list")
+    public SellerPromotionalPostsDTO getPromotionalPosts(@PathVariable Long userId){
+        try {
+            return this.postService.getPromotionalPosts(userId);
         } catch (ResourceNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }

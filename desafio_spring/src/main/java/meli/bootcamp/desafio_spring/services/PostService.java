@@ -1,13 +1,10 @@
 package meli.bootcamp.desafio_spring.services;
 
-import meli.bootcamp.desafio_spring.dtos.PostDTO;
-import meli.bootcamp.desafio_spring.dtos.UserFollowingPostsDTO;
+import meli.bootcamp.desafio_spring.dtos.*;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
-import meli.bootcamp.desafio_spring.dtos.PromotionalCountDTO;
-import meli.bootcamp.desafio_spring.dtos.CreatePostDTO;
 import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
 
@@ -76,4 +73,7 @@ public class PostService {
         return userService.getPromoProductsCount(userId);
     }
 
+    public SellerPromotionalPostsDTO getPromotionalPosts(Long userId) {
+        return userService.getPromotionalPosts(userId);
+    }
 }
