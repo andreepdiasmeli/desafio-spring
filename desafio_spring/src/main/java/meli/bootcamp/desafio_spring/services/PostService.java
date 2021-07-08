@@ -14,6 +14,7 @@ import meli.bootcamp.desafio_spring.repositories.PostRepository;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -34,17 +35,26 @@ public class PostService {
         this.productService = productService;
     }
 
-    public UserFollowingPostsDTO getFollowerPosts(Long userId) throws ResourceNotFoundException {
+    public UserFollowingPostsDTO getFollowerPosts(Long userId, String order) throws ResourceNotFoundException {
         User user = this.userService.getUserById(userId);
 
         List<Post> allSellerFollowedPosts = buildFollowingSellersPosts(user);
 
+        Comparator<PostDTO> dateComparator = getDateComparator(order);
+
         List<PostDTO> allSellerFollowedPostsDTO = allSellerFollowedPosts.stream()
             .map(PostDTO::toDTO)
-            .sorted((post1, post2) -> post2.getDate().compareTo(post1.getDate()))
+            .sorted(dateComparator)
             .collect(Collectors.toList());
 
         return new UserFollowingPostsDTO(userId, allSellerFollowedPostsDTO);
+    }
+
+    private Comparator<PostDTO> getDateComparator(String order) {
+        if (order != null && !order.isEmpty() && order.equalsIgnoreCase("date_asc"))
+            return (post1, post2) -> post1.getDate().compareTo(post2.getDate());
+
+        return (post1, post2) -> post2.getDate().compareTo(post1.getDate());
     }
 
     private List<Post> buildFollowingSellersPosts(User user) {
