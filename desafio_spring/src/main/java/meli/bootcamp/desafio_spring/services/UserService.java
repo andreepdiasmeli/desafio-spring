@@ -33,12 +33,12 @@ public class UserService {
         return FollowersDTO.toDTO(seller);
     }
 
-    public FollowingDTO getFollowing(Long userId) throws ResourceNotFoundException{
+    public FollowingDTO getFollowing(Long userId) throws ResourceNotFoundException {
         User user = getUserById(userId);
         return FollowingDTO.toDTO(user);
     }
 
-    public PromotionalCountDTO getPromoProductsCount(Long sellerId){
+    public PromotionalCountDTO getPromoProductsCount(Long sellerId) throws ResourceNotFoundException {
         Seller seller = getSellerById(sellerId);
         return PromotionalCountDTO.toDTO(seller);
     }

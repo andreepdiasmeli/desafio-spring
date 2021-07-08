@@ -31,7 +31,10 @@ public class PromotionalCountDTO {
     }
 
     public static PromotionalCountDTO toDTO(Seller seller) {
-        Long promoProductsCount = seller.getPosts().stream().filter(x -> Objects.nonNull(x.getPromotion())).count();
+        Long promoProductsCount = seller.getPosts()
+                .stream()
+                .filter(x -> Objects.nonNull(x.getPromotion()))
+                .count();
         return new PromotionalCountDTO(seller.getId(), seller.getUsername(), promoProductsCount);
     }
 

@@ -33,8 +33,12 @@ public class SellerPromotionalPostsDTO {
     }
 
     public static SellerPromotionalPostsDTO toDTO(Seller seller) {
-        List<PromotionalPostDTO> promotionalPostList =  seller.getPosts().stream().filter(x -> Objects.nonNull(x.getPromotion()))
-                .map(PromotionalPostDTO::toDTO).collect(Collectors.toList());
+        List<PromotionalPostDTO> promotionalPostList =  seller.getPosts()
+                .stream()
+                .filter(x -> Objects.nonNull(x.getPromotion()))
+                .map(PromotionalPostDTO::toDTO)
+                .collect(Collectors.toList());
+
         return new SellerPromotionalPostsDTO(seller.getId(), seller.getUsername(), promotionalPostList);
     }
 }
