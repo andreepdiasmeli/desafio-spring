@@ -2,6 +2,7 @@ package meli.bootcamp.desafio_spring.controllers;
 
 import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
 import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
+import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class UserController {
         try{
             followerCountDTO = userService.getFollowersCount(sellerId);
         }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
         return followerCountDTO;
     }
@@ -40,9 +41,20 @@ public class UserController {
         try{
             followersDTO = userService.getFollowers(sellerId);
         }catch (ResourceNotFoundException ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         }
         return followersDTO;
+    }
+
+    @GetMapping("/{userId}/followed/list")
+    public FollowingDTO getFollowing(@PathVariable Long userId){
+        FollowingDTO followingDTO = null;
+        try{
+            followingDTO = userService.getFollowing(userId);
+        }catch (ResourceNotFoundException ex){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        }
+        return followingDTO;
     }
 
     @PostMapping("{userId}/follow/{userIdToFollow}")
@@ -51,7 +63,7 @@ public class UserController {
         try{
             this.userService.followSeller(userId,sellerId);
         }catch (ResourceNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
     }
 }
