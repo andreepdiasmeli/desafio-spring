@@ -48,4 +48,8 @@ public class Seller  extends User{
         this.followers.remove(user);
     }
 
+    public void removePost(Post post) {
+        this.posts.remove(post);
+    }
+
 }

@@ -12,6 +12,7 @@ public class CreatePostDTO {
     private Long productId;
     @NotNull @Positive
     private BigDecimal price;
+    private CreatePromotionDTO promotion;
 
     public CreatePostDTO() {
     }
@@ -22,8 +23,19 @@ public class CreatePostDTO {
         this.price = price;
     }
 
+    public CreatePostDTO(Long userId, Long productId, BigDecimal price, CreatePromotionDTO promotion) {
+        this.userId = userId;
+        this.productId = productId;
+        this.price = price;
+        this.promotion = promotion;
+    }
+
     public Long getUserId() {
         return userId;
+    }
+
+    public CreatePromotionDTO getPromotion() {
+        return promotion;
     }
 
     public Long getProductId() {

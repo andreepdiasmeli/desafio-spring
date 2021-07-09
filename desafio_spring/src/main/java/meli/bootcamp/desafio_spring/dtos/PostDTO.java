@@ -1,15 +1,15 @@
 package meli.bootcamp.desafio_spring.dtos;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import meli.bootcamp.desafio_spring.entities.Post;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class PostDTO {
     
     private Long sellerId;
     private Long postId;
-    private LocalDate date;
+    private LocalDateTime date;
     private ProductDTO detail;
     private BigDecimal price;
     private PromotionDTO promotion;
@@ -20,7 +20,7 @@ public class PostDTO {
     public PostDTO(
             Long sellerId,
             Long postId, 
-            LocalDate date, 
+            LocalDateTime date,
             ProductDTO detail, 
             BigDecimal price,
             PromotionDTO promotion) {
@@ -40,7 +40,7 @@ public class PostDTO {
         return this.postId;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return this.date;
     }
 
@@ -63,7 +63,7 @@ public class PostDTO {
         return new PostDTO(
             post.getSeller().getId(), 
             post.getId(),
-            post.getCreatedAt().toLocalDate(),
+            post.getCreatedAt(),
             postProductDTO,
             post.getPrice(),
             postPromotionDTO

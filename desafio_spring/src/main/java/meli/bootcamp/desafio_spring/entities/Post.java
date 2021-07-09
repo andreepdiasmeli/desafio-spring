@@ -72,4 +72,8 @@ public class Post {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 }

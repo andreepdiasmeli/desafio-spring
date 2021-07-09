@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
     private final SellerService sellerService;
@@ -115,5 +115,12 @@ public class UserService {
         user.unfollowSeller(seller);
 
         this.userRepository.save(user);
+    }
+
+
+    public void removePost(Post post) {
+        Seller seller = post.getSeller();
+        seller.removePost(post);
+        this.sellerRepository.save(seller);
     }
 }
