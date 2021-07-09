@@ -12,13 +12,28 @@ public class User {
     private Long id;
     private String username;
 
-    @ManyToMany(mappedBy = "followers")
+    @ManyToMany
+    @JoinTable(
+            uniqueConstraints = {
+                    @UniqueConstraint(columnNames = { "seller_id", "user_id" })},
+            name = "follower_following",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "seller_id")
+    )
     private List<Seller> following = new ArrayList<>();
 
     public User() {}
 
     public User(String username) {
         this.username = username;
+    }
+
+    public void followSeller(Seller seller){
+        following.add(seller);
+    }
+
+    public void unfollowSeller(Seller seller) {
+        following.remove(seller);
     }
 
     public Long getId() {
@@ -37,13 +52,11 @@ public class User {
         this.following = following;
     }
 
-    public void followSeller(Seller seller){
-        following.add(seller);
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void unfollowSeller(Seller seller) {
-        following.remove(seller);
-        seller.getFollowers().remove(this);
+    public void removeFollowing(Seller seller){
+        this.getFollowing().remove(seller);
     }
-
 }

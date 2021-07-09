@@ -5,14 +5,14 @@ import meli.bootcamp.desafio_spring.entities.User;
 public class UserDTO {
 
     private Long userId;
-    private String userName;
+    private String username;
 
     public UserDTO() {
     }
 
     public UserDTO(Long userId, String userName) {
         this.userId = userId;
-        this.userName = userName;
+        this.username = userName;
     }
 
     public static UserDTO toDTO(User user) {
@@ -23,7 +23,7 @@ public class UserDTO {
         return userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 }

@@ -12,13 +12,15 @@ import java.util.List;
 public class DBService {
 
     private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
     private final PostRepository postRepository;
     private final PromotionRepository promotionRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    public DBService(UserRepository userRepository, PostRepository postRepository, PromotionRepository promotionRepository, ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public DBService(UserRepository userRepository, SellerRepository sellerRepository, PostRepository postRepository, PromotionRepository promotionRepository, ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
+        this.sellerRepository = sellerRepository;
         this.postRepository = postRepository;
         this.promotionRepository = promotionRepository;
         this.productRepository = productRepository;
@@ -103,13 +105,15 @@ public class DBService {
         user4.setFollowing(List.of(seller4, seller5));
         user5.setFollowing(List.of());
 
+        userRepository.saveAll(List.of(seller1, seller2, seller3, seller4, seller5));
+
         seller1.setFollowers(List.of(user1));
         seller2.setFollowers(List.of(user1, user2));
         seller3.setFollowers(List.of(user2, user3));
         seller4.setFollowers(List.of(user3, user4));
+        seller5.setFollowers(List.of(user4));
 
         userRepository.saveAll(List.of(user1, user2, user3, user4, user5));
-        userRepository.saveAll(List.of(seller1, seller2, seller3, seller4, seller5));
 
         product1.setSeller(seller1);
         product2.setSeller(seller2);
@@ -118,7 +122,6 @@ public class DBService {
         product5.setSeller(seller5);
 
         productRepository.saveAll(List.of(product1, product2, product3, product4, product5));
-        seller5.setFollowers(List.of(user4));
 
         seller1.setProducts(List.of(product1));
         seller2.setProducts(List.of(product2));

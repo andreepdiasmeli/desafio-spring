@@ -1,17 +1,13 @@
 package meli.bootcamp.desafio_spring.services;
 
-import meli.bootcamp.desafio_spring.dtos.*;
 import meli.bootcamp.desafio_spring.entities.Category;
-import meli.bootcamp.desafio_spring.entities.Post;
-import meli.bootcamp.desafio_spring.entities.Product;
-import meli.bootcamp.desafio_spring.entities.Seller;
-import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
+import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
 import meli.bootcamp.desafio_spring.repositories.CategoryRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +18,12 @@ public class CategoryService {
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    public Category findById(Long categoryId) {
+        return this.categoryRepository.findById(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Category " + categoryId + " does not exist.")
+        );
     }
 
     public List<CategoryDTO> getAllCategories() {
