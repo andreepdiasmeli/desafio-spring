@@ -47,9 +47,9 @@ public class ProductService {
             paginatedProducts.getContent().stream().map(ProductDTO::toDTO).collect(Collectors.toList());
             
         int totalPages = paginatedProducts.getTotalPages();
-        pageSize = productDtoList.size() < pageSize ? productDtoList.size() : pageSize;
+        int resultCount = productDtoList.size() < pageSize ? productDtoList.size() : pageSize;
         PaginationResult<ProductDTO> paginationResult = 
-            new PaginationResult<ProductDTO>(pageNumber, pageSize, totalPages, productDtoList);
+            new PaginationResult<ProductDTO>(pageNumber, pageSize, totalPages, resultCount, productDtoList);
 
         return paginationResult;
     }

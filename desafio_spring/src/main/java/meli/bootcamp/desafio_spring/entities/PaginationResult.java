@@ -8,6 +8,7 @@ public class PaginationResult<T> {
     private Integer pageNumber;
     private Integer pageSize;
     private Integer totalPages;
+    private Integer resultCount;
     private List<T> results = new ArrayList<T>();
 
 
@@ -17,10 +18,12 @@ public class PaginationResult<T> {
             Integer pageNumber, 
             Integer pageSize, 
             Integer totalPages, 
+            Integer resultCount,
             List<T> results) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.totalPages = totalPages;
+        this.resultCount = resultCount;
         this.results = results;
     }
 
@@ -34,6 +37,10 @@ public class PaginationResult<T> {
 
     public Integer getTotalPages() {
         return this.totalPages;
+    }
+
+    public Integer getResultCount() {
+        return this.resultCount;
     }
 
     public List<T> getResults() {
