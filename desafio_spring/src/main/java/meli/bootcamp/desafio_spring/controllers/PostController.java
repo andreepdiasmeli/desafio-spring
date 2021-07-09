@@ -64,8 +64,8 @@ public class PostController {
     }
 
     @PutMapping("posts/promo/{postId}")
-    public PostDTO updatePromotionPost(@PathVariable Long postId, @Valid @RequestBody CreatePromotionDTO updatePost) {
-        return this.postService.updatePromotionPost(postId, updatePost);
+    public PostDTO updatePostPromotion(@PathVariable Long postId, @Valid @RequestBody CreatePromotionDTO updatePost) {
+        return this.postService.updatePostPromotion(postId, updatePost);
     }
 
     @DeleteMapping("posts/{postId}")

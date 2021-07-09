@@ -20,4 +20,15 @@ public class PromotionService {
         Promotion promotion = new Promotion(createPromotion.getDiscount(), createPromotion.getExpiresAt(), post);
         return PromotionDTO.toDTO(promotion);
     }
+
+    public void updatePromotion(Long oldPromotionId, CreatePromotionDTO updatePost) {
+        Promotion promo = this.promotionRepository.getById(oldPromotionId);
+        promo.setDiscout(updatePost.getDiscount());
+        promo.setExpiresAt(updatePost.getExpiresAt());
+    }
+
+    public void deletePromotion(Promotion promotion, Post post) {
+        post.setPromotion(null);
+        this.promotionRepository.delete(promotion);
+    }
 }

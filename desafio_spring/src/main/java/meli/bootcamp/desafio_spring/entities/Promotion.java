@@ -41,4 +41,12 @@ public class Promotion {
     public Post getPost() {
         return post;
     }
+
+    public void setDiscout(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
 }

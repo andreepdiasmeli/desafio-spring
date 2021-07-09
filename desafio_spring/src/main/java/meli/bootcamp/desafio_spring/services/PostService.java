@@ -1,10 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
-import meli.bootcamp.desafio_spring.entities.Post;
-import meli.bootcamp.desafio_spring.entities.Product;
-import meli.bootcamp.desafio_spring.entities.Seller;
-import meli.bootcamp.desafio_spring.entities.User;
+import meli.bootcamp.desafio_spring.entities.*;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
 import meli.bootcamp.desafio_spring.util.SortUtils;
@@ -106,9 +103,13 @@ public class PostService {
     }
 
     public PostDTO getPostById(Long postId) {
-        Post post = this.postRepository.findById(postId).orElseThrow(() ->
-                new ResourceNotFoundException("Post with " + postId + " does not exist."));
+        Post post = this.findPostById(postId);
         return PostDTO.toDTO(post);
+    }
+
+    public Post findPostById(Long postId) {
+        return this.postRepository.findById(postId).orElseThrow(() ->
+                new ResourceNotFoundException("Post with " + postId + " does not exist."));
     }
 
     public List<PostDTO> getAllPosts(String order) {
@@ -119,34 +120,37 @@ public class PostService {
     }
 
     public PostDTO updatePost(Long postId, CreatePostDTO updatePost) {
-        Post post = this.postRepository.findById(postId).orElseThrow(()->
-                new ResourceNotFoundException("Post with id " + postId + " does not exist."));
+        Post post = this.findPostById(postId);
         Product product = this.productService.getProductById(updatePost.getProductId());
         post.setProduct(product);
         post.setPrice(updatePost.getPrice());
-        if (!Objects.isNull(updatePost.getPromotion())) {
-            this.promotionService.createPromotion(updatePost.getPromotion(), post);
-        }
+        this.handleUpdatePromotionPost(post, updatePost.getPromotion());
         post = this.postRepository.save(post);
         return PostDTO.toDTO(post);
     }
 
-    public PostDTO updatePromotionPost(Long postId, CreatePromotionDTO updatePost) {
-        Post post = this.postRepository.findById(postId).orElseThrow(()->
-                new ResourceNotFoundException("Post with id " + postId + " does not exist."));
+    public PostDTO updatePostPromotion(Long postId, CreatePromotionDTO updatePost) {
+        Post post = this.findPostById(postId);
         if (Objects.isNull(post.getPromotion())) {
             throw new ResourceNotFoundException("Post with id " + postId + " is not a promotional post.");
         }
-
-        this.promotionService.createPromotion(updatePost, post);
+        this.promotionService.updatePromotion(post.getPromotion().getId(), updatePost);
         this.postRepository.save(post);
         return PostDTO.toDTO(post);
     }
 
     public void deletePost(Long postId) {
-        Post post = this.postRepository.findById(postId).orElseThrow(() ->
-                new ResourceNotFoundException("Post with id " + postId + " does not exist."));
+        Post post = this.findPostById(postId);
         this.userService.removePost(post);
         this.postRepository.deleteById(postId);
+    }
+
+    private void handleUpdatePromotionPost(Post post, CreatePromotionDTO promo) {
+        if (Objects.isNull(post.getPromotion()) && !Objects.isNull(promo))
+            this.promotionService.createPromotion(promo, post);
+        else if(Objects.isNull(promo) && !Objects.isNull(post.getPromotion()))
+            this.promotionService.deletePromotion(post.getPromotion(), post);
+        else
+            this.promotionService.updatePromotion(post.getPromotion().getId(), promo);
     }
 }
