@@ -49,6 +49,7 @@ Este endpoint retorna o número de vendedores que um determinado usuário segue.
 
 
 **ENDPOINT:** `GET http://localhost:8080/users/{userId}/followed/count`
+
 **Exemplo de RESPONSE BODY:**
 ```json=
 {
