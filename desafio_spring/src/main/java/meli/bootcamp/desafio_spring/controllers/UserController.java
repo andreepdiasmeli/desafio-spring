@@ -63,7 +63,7 @@ public class UserController {
     public FollowersDTO getFollowers(
             @PathVariable(value = "userId") Long sellerId,
             @RequestParam(required = false) String order){
-        return sellerService.getFollowers(sellerId, order);
+        return userService.getFollowers(sellerId, order);
     }
 
     @GetMapping("/{userId}/followed/list")

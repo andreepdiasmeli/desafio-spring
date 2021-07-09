@@ -2,14 +2,10 @@ package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.CreateSellerDTO;
 import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
-import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
 import meli.bootcamp.desafio_spring.dtos.SellerDTO;
 import meli.bootcamp.desafio_spring.entities.Seller;
-import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.SellerRepository;
-import meli.bootcamp.desafio_spring.util.SortUtils;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +15,9 @@ import java.util.stream.Collectors;
 public class SellerService {
 
     private final SellerRepository sellerRepository;
-    private final UserService userService;
 
-    public SellerService(SellerRepository sellerRepository, UserService userService) {
+    public SellerService(SellerRepository sellerRepository) {
         this.sellerRepository = sellerRepository;
-        this.userService = userService;
     }
 
     public Seller findSellerById(Long sellerId)  {
@@ -69,18 +63,5 @@ public class SellerService {
     public FollowerCountDTO getFollowersCount(Long sellerId) {
         Seller seller = findSellerById(sellerId);
         return FollowerCountDTO.toDTO(seller);
-    }
-
-    public FollowersDTO getFollowers(Long sellerId, String orderParam) {
-        Seller seller = findSellerById(sellerId);
-
-       List<User> followers = userService.findFollowers(sellerId, orderParam);
-
-        return FollowersDTO.toDTO(seller, followers);
-    }
-
-    public List<Seller> findFollowing(Long userId, String orderParam) {
-        Sort sort = SortUtils.getUserSorterOf(orderParam);
-        return sellerRepository.findAllByFollowers_Id(userId, sort);
     }
 }

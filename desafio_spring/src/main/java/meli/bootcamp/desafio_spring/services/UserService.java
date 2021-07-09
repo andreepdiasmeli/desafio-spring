@@ -5,6 +5,7 @@ import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
+import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.repositories.UserRepository;
 import meli.bootcamp.desafio_spring.util.SortUtils;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,11 +17,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
     private final SellerService sellerService;
 
-    public UserService(UserRepository userRepository, SellerService sellerService) {
+    public UserService(UserRepository userRepository, SellerRepository sellerRepository, SellerService sellerService) {
         this.userRepository = userRepository;
+        this.sellerRepository = sellerRepository;
         this.sellerService = sellerService;
     }
 
@@ -71,14 +75,19 @@ public class UserService {
     public FollowingDTO getFollowing(Long userId, String orderParam) {
         User user = findUserById(userId);
 
-        List<Seller> following = sellerService.findFollowing(userId, orderParam);
+        Sort sort = SortUtils.getUserSorterOf(orderParam);
+        List<Seller> following = sellerRepository.findAllByFollowers_Id(userId, sort);
 
         return FollowingDTO.toDTO(user, following);
     }
 
-    public List<User> findFollowers(Long sellerId, String orderParam) {
+    public FollowersDTO getFollowers(Long sellerId, String orderParam) {
+        Seller seller = sellerService.findSellerById(sellerId);
+
         Sort sort = SortUtils.getUserSorterOf(orderParam);
-        return userRepository.findAllByFollowing_Id(sellerId, sort);
+        List<User> followers = userRepository.findAllByFollowing_Id(sellerId, sort);
+
+        return FollowersDTO.toDTO(seller, followers);
     }
 
     public PromotionalCountDTO getPromoProductsCount(Long sellerId) {
