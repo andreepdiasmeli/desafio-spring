@@ -99,7 +99,7 @@ public class UserService {
 
     public void followSeller(Long userId, Long sellerId) {
         if(userId == sellerId){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "An user can’t follow themselves.");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "An user can’t follow themselves. ");
         }
 
         User user = findUserById(userId);
