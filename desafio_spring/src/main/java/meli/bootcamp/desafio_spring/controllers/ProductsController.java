@@ -1,7 +1,5 @@
 package meli.bootcamp.desafio_spring.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,12 +9,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
 import meli.bootcamp.desafio_spring.dtos.ProductDTO;
 import meli.bootcamp.desafio_spring.dtos.UpsertProductDTO;
+import meli.bootcamp.desafio_spring.entities.PaginationResult;
 import meli.bootcamp.desafio_spring.services.ProductService;
 
 @RestController
@@ -30,8 +30,12 @@ public class ProductsController {
     }
 
     @GetMapping
-    public List<ProductDTO> getAllProducts() {
-        return this.productService.getAllProducts();
+    public PaginationResult<ProductDTO> getAllProducts(
+            @RequestParam(required = false) Integer pageNumber,
+            @RequestParam(required = false) Integer pageSize) {
+        PaginationResult<ProductDTO> paginationResult = this.productService.getAllProducts(pageNumber, pageSize);
+
+        return paginationResult;
     }
     
     @GetMapping("{productId}")

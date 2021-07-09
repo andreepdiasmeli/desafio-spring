@@ -3,6 +3,7 @@ package meli.bootcamp.desafio_spring.services;
 import meli.bootcamp.desafio_spring.dtos.UpsertProductDTO;
 import meli.bootcamp.desafio_spring.dtos.ProductDTO;
 import meli.bootcamp.desafio_spring.entities.Category;
+import meli.bootcamp.desafio_spring.entities.PaginationResult;
 import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.ProductRepository;
@@ -10,6 +11,9 @@ import java.util.stream.Collectors;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +21,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
+    private static final Integer defaultPageSize = 5;
 
     
     public ProductService(
@@ -32,9 +37,21 @@ public class ProductService {
         );
     }
 
-    public List<ProductDTO> getAllProducts() {
-        List<Product> products = this.productRepository.findAll();
-        return products.stream().map(ProductDTO::toDTO).collect(Collectors.toList());
+    public PaginationResult<ProductDTO> getAllProducts(Integer pageNumber, Integer pageSize) {
+        pageNumber = pageNumber != null ? pageNumber : 0;
+        pageSize = pageSize != null ? pageSize : defaultPageSize;
+
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        Page<Product> paginatedProducts = this.productRepository.findAll(paging);
+        List<ProductDTO> productDtoList = 
+            paginatedProducts.getContent().stream().map(ProductDTO::toDTO).collect(Collectors.toList());
+            
+        int totalPages = paginatedProducts.getTotalPages();
+        pageSize = productDtoList.size() < pageSize ? productDtoList.size() : pageSize;
+        PaginationResult<ProductDTO> paginationResult = 
+            new PaginationResult<ProductDTO>(pageNumber, pageSize, totalPages, productDtoList);
+
+        return paginationResult;
     }
 
     public ProductDTO findProductById(Long productId) {
