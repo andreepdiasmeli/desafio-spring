@@ -102,7 +102,7 @@ public class UserService {
         Seller seller = sellerService.findSellerById(sellerId);
 
         if(userId == sellerId){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can't follow");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "An user can’t follow themselves.");
         }
 
         user.followSeller(seller);
