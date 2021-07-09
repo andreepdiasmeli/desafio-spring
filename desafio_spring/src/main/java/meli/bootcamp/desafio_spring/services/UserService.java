@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @Service
 public class UserService {
@@ -92,11 +96,6 @@ public class UserService {
         this.sellerRepository.save(seller);
     }
 
-    public SellerPromotionalPostsDTO getPromotionalPosts(Long sellerId) {
-        Seller seller = getSellerById(sellerId);
-        return SellerPromotionalPostsDTO.toDTO(seller);
-    }
-
     public Sort getSortByParamName(String paramName){
         if("name_asc".equalsIgnoreCase(paramName)){
             return sortByNameAsc();
@@ -113,5 +112,7 @@ public class UserService {
     private Sort sortByNameDesc() {
         return Sort.by(Sort.Direction.DESC, "username");
     }
+
+
 
 }
