@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -20,8 +20,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<CategoryDTO> getAllCategorys() {
-        return this.categoryService.getAllCategorys();
+    public List<CategoryDTO> getAllCategories() {
+        return this.categoryService.getAllCategories();
     }
 
     @GetMapping("{idCategory}")

@@ -8,6 +8,7 @@ import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.CategoryRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,7 +24,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryDTO> getAllCategorys() {
+    public List<CategoryDTO> getAllCategories() {
         List<Category> category = this.categoryRepository.findAll();
         return category.stream().map(CategoryDTO::toDTO).collect(Collectors.toList());
     }
@@ -61,8 +62,14 @@ public class CategoryService {
 
     public void deleteCategory(Long idCategory) {
         if (!this.categoryRepository.existsById(idCategory)) {
-            throw new ResourceNotFoundException("Product with id " + idCategory + " does not exist.");
+            throw new ResourceNotFoundException("Category with id " + idCategory + " does not exist.");
         }
-        this.categoryRepository.deleteById(idCategory);
+
+        try{
+            this.categoryRepository.deleteById(idCategory);
+        } catch (DataIntegrityViolationException e){
+            throw new DuplicatedResourceException("you cannot delete a category id " + idCategory + " that has products.");
+        }
+
     }
 }
