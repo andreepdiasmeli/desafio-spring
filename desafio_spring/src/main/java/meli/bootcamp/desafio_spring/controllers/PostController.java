@@ -54,7 +54,7 @@ public class PostController {
 
     @PostMapping("newpromopost")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDTO createPromoPost(@RequestBody @Valid CreatePostDTO createPost) {
+    public PostDTO createPromotionalPost(@RequestBody @Valid CreatePostDTO createPost) {
         return this.postService.createPost(createPost);
     }
 
@@ -66,5 +66,10 @@ public class PostController {
     @PutMapping("posts/promo/{postId}")
     public PostDTO updatePromotionPost(@PathVariable Long postId, @Valid @RequestBody CreatePromotionDTO updatePost) {
         return this.postService.updatePromotionPost(postId, updatePost);
+    }
+
+    @DeleteMapping("posts/{postId}")
+    public void deletePost(@PathVariable Long postId) {
+        this.postService.deletePost(postId);
     }
 }

@@ -142,4 +142,11 @@ public class PostService {
         this.postRepository.save(post);
         return PostDTO.toDTO(post);
     }
+
+    public void deletePost(Long postId) {
+        Post post = this.postRepository.findById(postId).orElseThrow(() ->
+                new ResourceNotFoundException("Post with id " + postId + " does not exist."));
+        this.userService.removePost(post);
+        this.postRepository.deleteById(postId);
+    }
 }

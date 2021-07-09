@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
@@ -96,5 +97,12 @@ public class UserService {
     public SellerPromotionalPostsDTO getPromotionalPosts(Long sellerId) {
         Seller seller = getSellerById(sellerId);
         return SellerPromotionalPostsDTO.toDTO(seller);
+    }
+
+
+    public void removePost(Post post) {
+        Seller seller = post.getSeller();
+        seller.removePost(post);
+        this.sellerRepository.save(seller);
     }
 }
