@@ -3,13 +3,9 @@ package meli.bootcamp.desafio_spring.services;
 import meli.bootcamp.desafio_spring.dtos.UpsertProductDTO;
 import meli.bootcamp.desafio_spring.dtos.ProductDTO;
 import meli.bootcamp.desafio_spring.entities.Category;
-import meli.bootcamp.desafio_spring.entities.PaginationResult;
 import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.ProductRepository;
-import java.util.stream.Collectors;
-
-import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -37,21 +33,14 @@ public class ProductService {
         );
     }
 
-    public PaginationResult<ProductDTO> getAllProducts(Integer pageNumber, Integer pageSize) {
+    public Page<ProductDTO> getAllProducts(Integer pageNumber, Integer pageSize) {
         pageNumber = pageNumber != null ? pageNumber : 0;
         pageSize = pageSize != null ? pageSize : defaultPageSize;
 
         Pageable paging = PageRequest.of(pageNumber, pageSize);
         Page<Product> paginatedProducts = this.productRepository.findAll(paging);
-        List<ProductDTO> productDtoList = 
-            paginatedProducts.getContent().stream().map(ProductDTO::toDTO).collect(Collectors.toList());
-            
-        int totalPages = paginatedProducts.getTotalPages();
-        int resultCount = productDtoList.size() < pageSize ? productDtoList.size() : pageSize;
-        PaginationResult<ProductDTO> paginationResult = 
-            new PaginationResult<ProductDTO>(pageNumber, pageSize, totalPages, resultCount, productDtoList);
-
-        return paginationResult;
+        
+        return paginatedProducts.map(ProductDTO::toDTO);
     }
 
     public ProductDTO findProductById(Long productId) {

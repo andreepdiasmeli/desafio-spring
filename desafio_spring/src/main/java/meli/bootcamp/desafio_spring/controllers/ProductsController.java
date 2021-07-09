@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 
 import meli.bootcamp.desafio_spring.dtos.ProductDTO;
 import meli.bootcamp.desafio_spring.dtos.UpsertProductDTO;
-import meli.bootcamp.desafio_spring.entities.PaginationResult;
 import meli.bootcamp.desafio_spring.services.ProductService;
 
 @RestController
@@ -30,12 +30,10 @@ public class ProductsController {
     }
 
     @GetMapping
-    public PaginationResult<ProductDTO> getAllProducts(
+    public Page<ProductDTO> getAllProducts(
             @RequestParam(required = false) Integer pageNumber,
             @RequestParam(required = false) Integer pageSize) {
-        PaginationResult<ProductDTO> paginationResult = this.productService.getAllProducts(pageNumber, pageSize);
-
-        return paginationResult;
+        return this.productService.getAllProducts(pageNumber, pageSize);
     }
     
     @GetMapping("{productId}")
