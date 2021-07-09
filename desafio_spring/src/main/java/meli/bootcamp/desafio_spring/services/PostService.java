@@ -1,7 +1,10 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
-import meli.bootcamp.desafio_spring.entities.*;
+import meli.bootcamp.desafio_spring.entities.Post;
+import meli.bootcamp.desafio_spring.entities.Product;
+import meli.bootcamp.desafio_spring.entities.Seller;
+import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
 import meli.bootcamp.desafio_spring.util.SortUtils;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,20 +27,23 @@ public class PostService {
     private final PostRepository postRepository;
     private final ProductService productService;
     private final UserService userService;
+    private final SellerService sellerService;
 
     public PostService(
             PromotionService promotionService,
             PostRepository postRepository,
             ProductService productService, 
-            UserService userService) {
+            UserService userService,
+            SellerService sellerService) {
         this.promotionService = promotionService;
         this.postRepository = postRepository;
         this.userService = userService;
         this.productService = productService;
+        this.sellerService = sellerService;
     }
 
     public UserFollowingPostsDTO getFollowerPosts(Long userId, String order) {
-        User user = this.userService.getUserById(userId);
+        User user = this.userService.findUserById(userId);
 
         List<Post> allSellerFollowedPosts = buildFollowingSellersPosts(user);
 
@@ -85,7 +92,7 @@ public class PostService {
     }
 
     public PostDTO createPost(BigDecimal price, Long sellerId, Long productId, CreatePromotionDTO createPromotion) {
-        Seller seller = this.userService.getSellerById(sellerId);
+        Seller seller = this.sellerService.findSellerById(sellerId);
         Product product = this.productService.getProductById(productId);
         Post newPost = this.buildPost(price, seller, product, createPromotion);
         return PostDTO.toDTO(newPost);
@@ -98,8 +105,16 @@ public class PostService {
         return this.postRepository.save(newPost);
     }
 
-    public SellerPromotionalPostsDTO getPromotionalPosts(Long userId) {
-        return userService.getPromotionalPosts(userId);
+    public SellerPostsDTO getPosts(Long userId, boolean isPromo, String order) {
+        Seller seller = sellerService.findSellerById(userId);
+        Predicate<Post> predicate = getPromotionalPostFilter(isPromo);
+
+        Sort sort = SortUtils.getPostSorterOf(order);
+
+        List<Post> posts = postRepository.findAllBySeller_Id(userId, sort);
+
+        SellerPostsDTO sellerPostsDTO = SellerPostsDTO.toDTO(seller, posts, predicate);
+        return sellerPostsDTO;
     }
 
     public PostDTO getPostById(Long postId) {
@@ -153,4 +168,14 @@ public class PostService {
         else
             this.promotionService.updatePromotion(post.getPromotion().getId(), promo);
     }
+
+    public Predicate<Post> getPromotionalPostFilter (boolean isPromo) {
+        Predicate<Post> predicate = p -> true;
+        if (isPromo) {
+            predicate = p -> Objects.nonNull(p.getPromotion());
+        }
+        return predicate;
+
+    }
+
 }

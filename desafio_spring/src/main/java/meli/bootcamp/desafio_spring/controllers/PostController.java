@@ -31,8 +31,11 @@ public class PostController {
     }
 
     @GetMapping("/{userId}/list")
-    public SellerPromotionalPostsDTO getPromotionalPosts(@PathVariable Long userId){
-        return this.postService.getPromotionalPosts(userId);
+    public SellerPostsDTO getPosts(
+            @PathVariable Long userId,
+            @RequestParam(required = false) boolean onlyPromo,
+            @RequestParam(required = false) String order){
+        return this.postService.getPosts(userId, onlyPromo, order);
     }
 
     @GetMapping("/posts")
