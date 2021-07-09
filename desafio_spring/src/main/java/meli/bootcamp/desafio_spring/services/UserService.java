@@ -98,12 +98,12 @@ public class UserService {
     }
 
     public void followSeller(Long userId, Long sellerId) {
-        User user = findUserById(userId);
-        Seller seller = sellerService.findSellerById(sellerId);
-
         if(userId == sellerId){
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "An user can’t follow themselves.");
         }
+
+        User user = findUserById(userId);
+        Seller seller = sellerService.findSellerById(sellerId);
 
         user.followSeller(seller);
 
@@ -115,12 +115,12 @@ public class UserService {
     }
 
     public void unfollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException {
-        User user = findUserById(userId);
-        Seller seller = sellerService.findSellerById(sellerId);
-
         if(!sellerRepository.existsByIdAndFollowers_Id(sellerId, userId)){
             throw new DuplicatedResourceException("The user with id " + userId + " is not following " + sellerId);
         }
+
+        User user = findUserById(userId);
+        Seller seller = sellerService.findSellerById(sellerId);
 
         user.unfollowSeller(seller);
 
