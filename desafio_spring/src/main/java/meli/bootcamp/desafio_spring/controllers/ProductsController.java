@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 
@@ -29,6 +32,7 @@ public class ProductsController {
         this.productService = productService;
     }
 
+    @Operation(summary = "Get all products")
     @GetMapping
     public Page<ProductDTO> getAllProducts(
             @RequestParam(required = false) Integer pageNumber,
@@ -36,17 +40,20 @@ public class ProductsController {
         return this.productService.getAllProducts(pageNumber, pageSize);
     }
     
+    @Operation(summary = "Get a specific product")
     @GetMapping("{productId}")
     public ProductDTO findProductById(@PathVariable Long productId) {
         return this.productService.findProductById(productId);
     }
 
+    @Operation(summary = "Create a product")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDTO addProduct(@RequestBody @Valid UpsertProductDTO upsertProductDTO) {
         return this.productService.addProduct(upsertProductDTO);
     }
 
+    @Operation(summary = "Update an existing product")
     @PutMapping("{productId}")
     public ProductDTO updateProduct(
             @PathVariable Long productId,
@@ -54,6 +61,7 @@ public class ProductsController {
         return this.productService.updateProduct(productId, upsertProductDTO);
     }
 
+    @Operation(summary = "Delete an existing product")
     @DeleteMapping("{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Long productId) {
