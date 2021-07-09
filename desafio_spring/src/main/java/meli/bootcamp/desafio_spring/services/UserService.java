@@ -1,6 +1,7 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
@@ -11,7 +12,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,11 +88,6 @@ public class UserService {
     public PromotionalCountDTO getPromoProductsCount(Long sellerId) {
         Seller seller = sellerService.findSellerById(sellerId);
         return PromotionalCountDTO.toDTO(seller);
-    }
-
-    public SellerPromotionalPostsDTO getPromotionalPosts(Long sellerId) {
-        Seller seller = sellerService.findSellerById(sellerId);
-        return SellerPromotionalPostsDTO.toDTO(seller);
     }
 
     public void followSeller(Long userId, Long sellerId) {
