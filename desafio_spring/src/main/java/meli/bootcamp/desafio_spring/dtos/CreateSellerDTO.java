@@ -1,10 +1,10 @@
 package meli.bootcamp.desafio_spring.dtos;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 public class CreateSellerDTO {
 
-    @NotEmpty
+    @NotBlank
     private String username;
 
     public CreateSellerDTO() {

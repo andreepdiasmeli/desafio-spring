@@ -6,6 +6,7 @@ import meli.bootcamp.desafio_spring.services.SellerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,12 +31,12 @@ public class SellerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SellerDTO create(@RequestBody CreateSellerDTO createSellerDTO){
+    public SellerDTO create(@RequestBody @Valid CreateSellerDTO createSellerDTO){
         return sellerService.createSeller(createSellerDTO);
     }
 
     @PutMapping("{sellerId}")
-    public SellerDTO update(@PathVariable Long sellerId, @RequestBody SellerDTO sellerDTO){
+    public SellerDTO update(@PathVariable Long sellerId, @RequestBody @Valid CreateSellerDTO sellerDTO){
         return sellerService.updateSeller(sellerId, sellerDTO);
     }
 

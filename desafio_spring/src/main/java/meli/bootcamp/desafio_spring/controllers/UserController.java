@@ -6,6 +6,7 @@ import meli.bootcamp.desafio_spring.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -33,12 +34,12 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@RequestBody CreateUserDTO createUserDTO){
+    public UserDTO create(@RequestBody @Valid CreateUserDTO createUserDTO){
         return userService.createUser(createUserDTO);
     }
 
     @PutMapping("{userId}")
-    public UserDTO update(@PathVariable Long userId, @RequestBody UserDTO userDTO){
+    public UserDTO update(@PathVariable Long userId, @RequestBody @Valid CreateUserDTO userDTO){
         return userService.updateUser(userId, userDTO);
     }
 

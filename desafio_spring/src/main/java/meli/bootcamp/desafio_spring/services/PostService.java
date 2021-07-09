@@ -114,7 +114,7 @@ public class PostService {
     }
 
     public SellerPostsDTO getPosts(Long userId, boolean isPromo, String order) {
-        Seller seller = userService.getSellerById(userId);
+        Seller seller = sellerService.findSellerById(userId);
         Predicate<Post> predicate = getPromotionalPostFilter(isPromo);
 
         Sort sort = SortUtils.getPostSorterOf(order);

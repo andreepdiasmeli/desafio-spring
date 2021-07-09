@@ -47,7 +47,7 @@ public class SellerService {
         return SellerDTO.toDTO(newSeller);
     }
 
-    public SellerDTO updateSeller(Long sellerId, SellerDTO sellerDTO) {
+    public SellerDTO updateSeller(Long sellerId, CreateSellerDTO sellerDTO) {
         Seller seller = findSellerById(sellerId);
 
         seller.setUsername(sellerDTO.getUsername());

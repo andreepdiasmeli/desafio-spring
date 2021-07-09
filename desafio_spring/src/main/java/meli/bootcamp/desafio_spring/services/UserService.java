@@ -1,7 +1,6 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
-import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
@@ -12,10 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +45,7 @@ public class UserService {
         return UserDTO.toDTO(newUser);
     }
 
-    public UserDTO updateUser(Long userId, UserDTO userDTO) {
+    public UserDTO updateUser(Long userId, CreateUserDTO userDTO) {
         User user = findUserById(userId);
 
         user.setUsername(userDTO.getUsername());
