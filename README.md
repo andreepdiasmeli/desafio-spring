@@ -17,7 +17,7 @@ A aplicação foi construída em camadas, onde existe um pacote **controllers** 
 O diagrama abaixo representa o relacionamento entre as entidades e sua cardinalidade:
 
 <p align="center">
-  <img src="https://i.imgur.com/xG841Nq.png">
+  <img src="https://i.imgur.com/4cZOvDA.png">
 </p>
 
 ---
