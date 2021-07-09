@@ -96,11 +96,6 @@ public class UserService {
         this.sellerRepository.save(seller);
     }
 
-    public SellerPostsDTO getPosts(Long sellerId, boolean isPromo) {
-        Seller seller = getSellerById(sellerId);
-        return SellerPostsDTO.toDTO(seller, getPromotionalPostFilter(isPromo));
-    }
-
     public Sort getSortByParamName(String paramName){
         if("name_asc".equalsIgnoreCase(paramName)){
             return sortByNameAsc();
@@ -108,15 +103,6 @@ public class UserService {
             return sortByNameDesc();
         }
         return null;
-    }
-
-    public Predicate<Post> getPromotionalPostFilter (boolean isPromo) {
-        Predicate<Post> predicate = p -> true;
-        if (isPromo) {
-            predicate = p -> Objects.nonNull(p.getPromotion());
-        }
-        return predicate;
-
     }
 
     private Sort sortByNameAsc() {

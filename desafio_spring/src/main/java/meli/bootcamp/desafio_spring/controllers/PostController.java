@@ -32,8 +32,9 @@ public class PostController {
     @GetMapping("/{userId}/list")
     public SellerPostsDTO getPosts(
             @PathVariable Long userId,
-            @RequestParam(required = false) boolean onlyPromo){
-        return this.postService.getPosts(userId, onlyPromo);
+            @RequestParam(required = false) boolean onlyPromo,
+            @RequestParam(required = false) String order){
+        return this.postService.getPosts(userId, onlyPromo, order);
     }
 
     @PostMapping("newpost")

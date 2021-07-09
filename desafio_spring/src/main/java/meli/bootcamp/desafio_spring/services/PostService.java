@@ -6,6 +6,8 @@ import meli.bootcamp.desafio_spring.entities.Product;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.repositories.PostRepository;
+import meli.bootcamp.desafio_spring.util.SortUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,8 +110,25 @@ public class PostService {
         return this.postRepository.save(newPost);
     }
 
-    public SellerPostsDTO getPosts(Long userId, boolean isPromo) {
-        return userService.getPosts(userId, isPromo);
+    public SellerPostsDTO getPosts(Long userId, boolean isPromo, String order) {
+        Seller seller = userService.getSellerById(userId);
+        Predicate<Post> predicate = getPromotionalPostFilter(isPromo);
+
+        Sort sort = SortUtils.getPostSorterOf(order);
+
+        List<Post> posts = postRepository.findAllBySeller_Id(userId, sort);
+
+        SellerPostsDTO sellerPostsDTO = SellerPostsDTO.toDTO(seller, posts, predicate);
+        return sellerPostsDTO;
+    }
+
+    public Predicate<Post> getPromotionalPostFilter (boolean isPromo) {
+        Predicate<Post> predicate = p -> true;
+        if (isPromo) {
+            predicate = p -> Objects.nonNull(p.getPromotion());
+        }
+        return predicate;
+
     }
 
 }

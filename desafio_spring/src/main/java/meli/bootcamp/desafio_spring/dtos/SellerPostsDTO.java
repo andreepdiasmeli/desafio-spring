@@ -34,9 +34,8 @@ public class SellerPostsDTO {
         return posts;
     }
 
-    public static SellerPostsDTO toDTO(Seller seller, Predicate<Post> predicate) {
-        List<PromotionalPostDTO> promotionalPostList =  seller.getPosts()
-                .stream()
+    public static SellerPostsDTO toDTO(Seller seller, List<Post> posts, Predicate<Post> predicate) {
+        List<PromotionalPostDTO> promotionalPostList =  posts.stream()
                 .filter(predicate)
                 .map(PromotionalPostDTO::toDTO)
                 .collect(Collectors.toList());
