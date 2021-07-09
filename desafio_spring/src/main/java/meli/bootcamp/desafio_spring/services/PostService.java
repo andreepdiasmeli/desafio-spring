@@ -139,7 +139,7 @@ public class PostService {
         }
 
         this.promotionService.createPromotion(updatePost, post);
-        this.postRepository.save(post);
+        post = this.postRepository.save(post);
         return PostDTO.toDTO(post);
     }
 
