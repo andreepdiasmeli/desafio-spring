@@ -83,16 +83,7 @@ public class PostService {
                 createPost.getPrice(),
                 createPost.getUserId(),
                 createPost.getProductId(),
-                null
-        );
-    }
-
-    public PostDTO createPost(CreatePromotionalPostDTO createPromotionalPost) {
-        return this.createPost(
-                createPromotionalPost.getPrice(),
-                createPromotionalPost.getUserId(),
-                createPromotionalPost.getProductId(),
-                createPromotionalPost.getPromotion()
+                createPost.getPromotion()
         );
     }
 
@@ -125,5 +116,30 @@ public class PostService {
         List<Post> allPosts = Objects.isNull(sorter) ? this.postRepository.findAll() :
                                                        this.postRepository.findAll(sorter);
         return allPosts.stream().map(PostDTO::toDTO).collect(Collectors.toList());
+    }
+
+    public PostDTO updatePost(Long postId, CreatePostDTO updatePost) {
+        Post post = this.postRepository.findById(postId).orElseThrow(()->
+                new ResourceNotFoundException("Post with id " + postId + " does not exist."));
+        Product product = this.productService.getProductById(updatePost.getProductId());
+        post.setProduct(product);
+        post.setPrice(updatePost.getPrice());
+        if (!Objects.isNull(updatePost.getPromotion())) {
+            this.promotionService.createPromotion(updatePost.getPromotion(), post);
+        }
+        post = this.postRepository.save(post);
+        return PostDTO.toDTO(post);
+    }
+
+    public PostDTO updatePromotionPost(Long postId, CreatePromotionDTO updatePost) {
+        Post post = this.postRepository.findById(postId).orElseThrow(()->
+                new ResourceNotFoundException("Post with id " + postId + " does not exist."));
+        if (Objects.isNull(post.getPromotion())) {
+            throw new ResourceNotFoundException("Post with id " + postId + " is not a promotional post.");
+        }
+
+        this.promotionService.createPromotion(updatePost, post);
+        this.postRepository.save(post);
+        return PostDTO.toDTO(post);
     }
 }
