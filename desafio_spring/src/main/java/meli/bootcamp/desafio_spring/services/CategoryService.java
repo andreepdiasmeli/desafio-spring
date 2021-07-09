@@ -48,7 +48,7 @@ public class CategoryService {
     public CategoryDTO updateCategory(Long id, CreateCategoryDTO categoryDTO) {
 
         Category category = this.categoryRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Category with id " + id + " already exists."));
+                new ResourceNotFoundException("Category with id " + id + " does not exist."));
 
         if (this.categoryRepository.existsByName(categoryDTO.getName())){
             throw new DuplicatedResourceException("Category with name " + categoryDTO.getName() + " already exists.");
@@ -56,7 +56,6 @@ public class CategoryService {
 
         category.setName(categoryDTO.getName());
         category = this.categoryRepository.save(category);
-
         return CategoryDTO.toDTO(category);
     }
 

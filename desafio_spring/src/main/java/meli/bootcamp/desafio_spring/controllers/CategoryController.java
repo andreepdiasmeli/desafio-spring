@@ -6,6 +6,7 @@ import meli.bootcamp.desafio_spring.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,12 +31,12 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDTO createCategory(@RequestBody CreateCategoryDTO createCategoryDTO){
+    public CategoryDTO createCategory(@RequestBody @Valid CreateCategoryDTO createCategoryDTO){
         return this.categoryService.createCategory(createCategoryDTO);
     }
 
     @PutMapping("{idCategory}")
-    public CategoryDTO updateCategory(@PathVariable Long idCategory, @RequestBody CreateCategoryDTO createCategoryDTO){
+    public CategoryDTO updateCategory(@PathVariable Long idCategory, @RequestBody @Valid CreateCategoryDTO createCategoryDTO){
         return this.categoryService.updateCategory(idCategory, createCategoryDTO);
     }
 

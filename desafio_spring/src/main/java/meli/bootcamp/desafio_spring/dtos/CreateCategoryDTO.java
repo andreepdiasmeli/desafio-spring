@@ -1,10 +1,11 @@
 package meli.bootcamp.desafio_spring.dtos;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class CreateCategoryDTO {
 
-    @NotNull
+    @NotNull @NotEmpty
     private String name;
 
     public CreateCategoryDTO(){}
