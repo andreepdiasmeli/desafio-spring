@@ -134,7 +134,7 @@ public class PostService {
         if (Objects.isNull(post.getPromotion())) {
             throw new ResourceNotFoundException("Post with id " + postId + " is not a promotional post.");
         }
-        this.promotionService.createPromotion(updatePost, post);
+        this.promotionService.updatePromotion(post.getPromotion().getId(), updatePost);
         post = this.postRepository.save(post);
         return PostDTO.toDTO(post);
     }
