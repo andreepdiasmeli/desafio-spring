@@ -23,20 +23,23 @@ public class PostService {
     private final PostRepository postRepository;
     private final ProductService productService;
     private final UserService userService;
+    private final SellerService sellerService;
 
     public PostService(
             PromotionService promotionService,
             PostRepository postRepository,
             ProductService productService, 
-            UserService userService) {
+            UserService userService,
+            SellerService sellerService) {
         this.promotionService = promotionService;
         this.postRepository = postRepository;
         this.userService = userService;
         this.productService = productService;
+        this.sellerService = sellerService;
     }
 
     public UserFollowingPostsDTO getFollowerPosts(Long userId, String order) {
-        User user = this.userService.getUserById(userId);
+        User user = this.userService.findUserById(userId);
 
         List<Post> allSellerFollowedPosts = buildFollowingSellersPosts(user);
 
@@ -94,7 +97,7 @@ public class PostService {
     }
 
     public PostDTO createPost(BigDecimal price, Long sellerId, Long productId, CreatePromotionDTO createPromotion) {
-        Seller seller = this.userService.getSellerById(sellerId);
+        Seller seller = this.sellerService.findSellerById(sellerId);
         Product product = this.productService.getProductById(productId);
         Post newPost = this.buildPost(price, seller, product, createPromotion);
         return PostDTO.toDTO(newPost);

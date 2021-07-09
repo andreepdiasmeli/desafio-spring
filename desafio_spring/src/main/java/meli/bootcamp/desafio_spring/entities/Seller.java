@@ -7,21 +7,14 @@ import java.util.List;
 @Entity
 public class Seller  extends User{
 
-    @ManyToMany
-    @JoinTable(
-            uniqueConstraints = {
-                    @UniqueConstraint(columnNames = { "seller_id", "user_id" })},
-            name = "follower_following",
-            joinColumns = @JoinColumn(name = "seller_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+    @ManyToMany(mappedBy = "following")
     private List<User> followers = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public Seller() {}
 

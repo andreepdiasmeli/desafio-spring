@@ -1,10 +1,12 @@
 package meli.bootcamp.desafio_spring.controllers;
 
-import meli.bootcamp.desafio_spring.dtos.FollowerCountDTO;
-import meli.bootcamp.desafio_spring.dtos.FollowersDTO;
-import meli.bootcamp.desafio_spring.dtos.FollowingDTO;
+import meli.bootcamp.desafio_spring.dtos.*;
+import meli.bootcamp.desafio_spring.services.SellerService;
 import meli.bootcamp.desafio_spring.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController()
@@ -12,21 +14,55 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final SellerService sellerService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SellerService sellerService) {
         this.userService = userService;
+        this.sellerService = sellerService;
+    }
+
+    @GetMapping
+    public List<UserDTO> getAll(){
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("{userId}")
+    public UserDTO getById(@PathVariable Long userId){
+        return userService.getUserById(userId);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO create(@RequestBody CreateUserDTO createUserDTO){
+        return userService.createUser(createUserDTO);
+    }
+
+    @PutMapping("{userId}")
+    public UserDTO update(@PathVariable Long userId, @RequestBody UserDTO userDTO){
+        return userService.updateUser(userId, userDTO);
+    }
+
+    @DeleteMapping("{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long userId){
+        userService.deleteUser(userId);
     }
 
     @GetMapping("{userId}/followers/count")
     public FollowerCountDTO getFollowersCount(@PathVariable(value = "userId") Long sellerId){
-        return userService.getFollowersCount(sellerId);
+        return sellerService.getFollowersCount(sellerId);
+    }
+
+    @GetMapping("{userId}/followed/count")
+    public FollowingCountDTO getFollowingCount(@PathVariable Long userId){
+        return userService.getFollowingCount(userId);
     }
 
     @GetMapping("{userId}/followers/list")
     public FollowersDTO getFollowers(
             @PathVariable(value = "userId") Long sellerId,
             @RequestParam(required = false) String order){
-        return userService.getFollowers(sellerId, order);
+        return sellerService.getFollowers(sellerId, order);
     }
 
     @GetMapping("/{userId}/followed/list")
