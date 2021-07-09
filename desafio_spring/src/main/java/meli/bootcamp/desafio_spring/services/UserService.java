@@ -118,6 +118,10 @@ public class UserService {
         User user = findUserById(userId);
         Seller seller = sellerService.findSellerById(sellerId);
 
+        if(!sellerRepository.existsByIdAndFollowers_Id(sellerId, userId)){
+            throw new DuplicatedResourceException("The user with id " + userId + " is not following " + sellerId);
+        }
+
         user.unfollowSeller(seller);
 
         this.userRepository.save(user);
