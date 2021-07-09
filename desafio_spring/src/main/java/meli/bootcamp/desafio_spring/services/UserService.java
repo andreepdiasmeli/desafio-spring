@@ -115,6 +115,10 @@ public class UserService {
     }
 
     public void unfollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException {
+        if(!sellerRepository.existsByIdAndFollowers_Id(sellerId, userId)){
+            throw new DuplicatedResourceException("The user with id " + userId + " is not following " + sellerId);
+        }
+
         User user = findUserById(userId);
         Seller seller = sellerService.findSellerById(sellerId);
 
