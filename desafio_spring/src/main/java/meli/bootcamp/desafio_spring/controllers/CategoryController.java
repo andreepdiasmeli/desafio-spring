@@ -2,6 +2,7 @@ package meli.bootcamp.desafio_spring.controllers;
 
 import meli.bootcamp.desafio_spring.dtos.CategoryDTO;
 import meli.bootcamp.desafio_spring.dtos.CreateCategoryDTO;
+import meli.bootcamp.desafio_spring.entities.Category;
 import meli.bootcamp.desafio_spring.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class CategoryController {
 
     @GetMapping("{idCategory}")
     public CategoryDTO getByIdCategory(@PathVariable Long idCategory) {
-        return this.categoryService.getIdCategory(idCategory);
+        return this.categoryService.getCategory(idCategory);
     }
 
     @PostMapping

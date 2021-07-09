@@ -29,9 +29,14 @@ public class CategoryService {
         return category.stream().map(CategoryDTO::toDTO).collect(Collectors.toList());
     }
 
-    public CategoryDTO getIdCategory(Long idCategory) {
+    public Category findCategoryById(Long idCategory) {
         Category category = this.categoryRepository.findById(idCategory).orElseThrow(() ->
                 new ResourceNotFoundException("Category with id " + idCategory + " was not found."));
+        return category;
+    }
+
+    public CategoryDTO getCategory(Long categoryId){
+        Category category = findCategoryById(categoryId);
         return CategoryDTO.toDTO(category);
     }
 
@@ -48,8 +53,7 @@ public class CategoryService {
 
     public CategoryDTO updateCategory(Long id, CreateCategoryDTO categoryDTO) {
 
-        Category category = this.categoryRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Category with id " + id + " does not exist."));
+        Category category = findCategoryById(id);
 
         if (this.categoryRepository.existsByName(categoryDTO.getName())){
             throw new DuplicatedResourceException("Category with name " + categoryDTO.getName() + " already exists.");
@@ -61,15 +65,11 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long idCategory) {
-        if (!this.categoryRepository.existsById(idCategory)) {
-            throw new ResourceNotFoundException("Category with id " + idCategory + " does not exist.");
-        }
-
+        findCategoryById(idCategory);
         try{
             this.categoryRepository.deleteById(idCategory);
         } catch (DataIntegrityViolationException e){
             throw new DuplicatedResourceException("you cannot delete a category id " + idCategory + " that has products.");
         }
-
     }
 }
