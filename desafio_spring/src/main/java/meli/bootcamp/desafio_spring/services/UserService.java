@@ -11,7 +11,9 @@ import meli.bootcamp.desafio_spring.repositories.UserRepository;
 import meli.bootcamp.desafio_spring.util.SortUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,6 +98,10 @@ public class UserService {
     }
 
     public void followSeller(Long userId, Long sellerId) {
+        if(userId == sellerId){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "An user can’t follow themselves. ");
+        }
+
         User user = findUserById(userId);
         Seller seller = sellerService.findSellerById(sellerId);
 
