@@ -1,118 +1,110 @@
 package meli.bootcamp.desafio_spring.services;
 
 import meli.bootcamp.desafio_spring.dtos.*;
-import meli.bootcamp.desafio_spring.entities.Post;
 import meli.bootcamp.desafio_spring.entities.Seller;
 import meli.bootcamp.desafio_spring.entities.User;
 import meli.bootcamp.desafio_spring.exceptions.DuplicatedResourceException;
 import meli.bootcamp.desafio_spring.exceptions.ResourceNotFoundException;
-import meli.bootcamp.desafio_spring.repositories.SellerRepository;
 import meli.bootcamp.desafio_spring.repositories.UserRepository;
-import org.springframework.data.domain.Sort;
+import meli.bootcamp.desafio_spring.util.SortUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final SellerRepository sellerRepository;
+    private final SellerService sellerService;
 
-    public UserService(UserRepository userRepository, SellerRepository sellerRepository) {
+    public UserService(UserRepository userRepository, SellerService sellerService) {
         this.userRepository = userRepository;
-        this.sellerRepository = sellerRepository;
+        this.sellerService = sellerService;
     }
 
-    public Seller getSellerById(Long sellerId) {
-        return sellerRepository.findById(sellerId).orElseThrow(() ->
-                new ResourceNotFoundException("Seller with id " + sellerId + " was not found."));
-    }
-
-    public FollowerCountDTO getFollowersCount(Long sellerId) {
-        Seller seller = getSellerById(sellerId);
-        return FollowerCountDTO.toDTO(seller);
-    }
-
-    public FollowersDTO getFollowers(Long sellerId, String orderParam) {
-        Seller seller = getSellerById(sellerId);
-
-        Sort sort = getSortByParamName(orderParam);
-        List<User> followers = userRepository.findAllByFollowing_Id(sellerId, sort);
-
-        return FollowersDTO.toDTO(seller, followers);
-    }
-
-    public FollowingDTO getFollowing(Long userId, String orderParam) {
-        User user = getUserById(userId);
-
-        Sort sort = getSortByParamName(orderParam);
-        List<Seller> following = sellerRepository.findAllByFollowers_Id(userId, sort);
-
-        return FollowingDTO.toDTO(user, following);
-    }
-
-    public PromotionalCountDTO getPromoProductsCount(Long sellerId) {
-        Seller seller = getSellerById(sellerId);
-        return PromotionalCountDTO.toDTO(seller);
-    }
-
-    public User getUserById(Long userId)  {
+    public User findUserById(Long userId)  {
         return this.userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("User with id " + userId + " was not found."));
     }
 
-    public void followSeller(Long userId, Long sellerId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("The user with id " + userId + " doesn't exist."));
+    public UserDTO getUserById(Long userId) {
+        User user = findUserById(userId);
+        return UserDTO.toDTO(user);
+    }
 
-        Seller seller = this.sellerRepository.findById(sellerId).orElseThrow(() ->
-                new ResourceNotFoundException("The seller with id " + sellerId + " doesn't exist."));
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserDTO::toDTO).collect(Collectors.toList());
+    }
+
+    public UserDTO createUser(CreateUserDTO createUserDTO){
+        User user = new User(createUserDTO.getUsername());
+        User newUser = userRepository.save(user);
+        return UserDTO.toDTO(newUser);
+    }
+
+    public UserDTO updateUser(Long userId, CreateUserDTO userDTO) {
+        User user = findUserById(userId);
+
+        user.setUsername(userDTO.getUsername());
+        User updatedUser = userRepository.save(user);
+
+        return UserDTO.toDTO(updatedUser);
+    }
+
+    public void deleteUser(Long userId) {
+        User user = findUserById(userId);
+
+        if(user instanceof Seller){
+            sellerService.deleteSeller((Seller)user); return;
+        }
+        userRepository.delete(user);
+    }
+
+    public FollowingCountDTO getFollowingCount(Long userId) {
+        User user = findUserById(userId);
+        return FollowingCountDTO.toDTO(user);
+    }
+
+    public FollowingDTO getFollowing(Long userId, String orderParam) {
+        User user = findUserById(userId);
+
+        List<Seller> following = sellerService.findFollowing(userId, orderParam);
+
+        return FollowingDTO.toDTO(user, following);
+    }
+
+    public List<User> findFollowers(Long sellerId, String orderParam) {
+        Sort sort = SortUtils.getUserSorterOf(orderParam);
+        return userRepository.findAllByFollowing_Id(sellerId, sort);
+    }
+
+    public PromotionalCountDTO getPromoProductsCount(Long sellerId) {
+        Seller seller = sellerService.findSellerById(sellerId);
+        return PromotionalCountDTO.toDTO(seller);
+    }
+
+    public void followSeller(Long userId, Long sellerId) {
+        User user = findUserById(userId);
+        Seller seller = sellerService.findSellerById(sellerId);
 
         user.followSeller(seller);
-        seller.addFollower(user);
 
         try{
             this.userRepository.save(user);
-            this.sellerRepository.save(seller);
         } catch (DataIntegrityViolationException e){
             throw new DuplicatedResourceException("The user with id " + userId + " already follows the seller " + sellerId);
         }
     }
 
     public void unfollowSeller(Long userId, Long sellerId) throws ResourceNotFoundException {
-        User user = this.userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("The user with id " + userId + " doesn't exist."));
-
-        Seller seller = this.sellerRepository.findById(sellerId).orElseThrow(() ->
-                new ResourceNotFoundException("The seller with id " + sellerId + " doesn't exist."));
+        User user = findUserById(userId);
+        Seller seller = sellerService.findSellerById(sellerId);
 
         user.unfollowSeller(seller);
 
         this.userRepository.save(user);
-        this.sellerRepository.save(seller);
     }
-
-    public Sort getSortByParamName(String paramName){
-        if("name_asc".equalsIgnoreCase(paramName)){
-            return sortByNameAsc();
-        }else if("name_desc".equalsIgnoreCase(paramName)){
-            return sortByNameDesc();
-        }
-        return null;
-    }
-
-    private Sort sortByNameAsc() {
-        return Sort.by(Sort.Direction.ASC, "username");
-    }
-
-    private Sort sortByNameDesc() {
-        return Sort.by(Sort.Direction.DESC, "username");
-    }
-
-
-
 }

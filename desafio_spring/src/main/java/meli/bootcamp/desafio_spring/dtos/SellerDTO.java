@@ -5,14 +5,14 @@ import meli.bootcamp.desafio_spring.entities.Seller;
 public class SellerDTO {
 
     private Long userId;
-    private String userName;
+    private String username;
 
     public SellerDTO() {
     }
 
-    public SellerDTO(Long userId, String userName) {
+    public SellerDTO(Long userId, String username) {
         this.userId = userId;
-        this.userName = userName;
+        this.username = username;
     }
 
     public static SellerDTO toDTO(Seller seller) {
@@ -23,8 +23,8 @@ public class SellerDTO {
         return userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
 }
