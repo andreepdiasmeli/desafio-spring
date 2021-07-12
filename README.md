@@ -7,7 +7,10 @@ A aplicação desenvolvida consiste em uma API REST que permite que compradores 
 
 ## Tecnologias utilizadas
 
-Para construir a plataforma foi utilizado o framework **Spring Boot** para a linguagem Java. A persistência de dados foi realizada com a implementação do JPA **Hibernate**, com o banco de dados relacional em memória **H2**. Também foi utilizado o **Bean Validation** para a validação de dados recebidos pelos endpoints. O sistema conta com a documentação gerada pelo **Swagger**.
+* Para construir a plataforma foi utilizado o framework **Spring Boot** para a linguagem Java. 
+* A persistência de dados foi realizada com a implementação do JPA **Hibernate**, com o banco de dados relacional em memória **H2**. 
+* Foi utilizado o **Bean Validation** para a validação de dados recebidos pelos endpoints. 
+* O  sistema conta com a documentação gerada pelo **Swagger**.
 
 
 ## Arquitetura
@@ -22,8 +25,7 @@ O diagrama abaixo representa o relacionamento entre as entidades e sua cardinali
 
 ---
 
-## Endpoints
-
+## Desenvolvimento
 
 O desafio conta com uma série de **9 requisitos obrigatórios** e **3 requisitos bônus**. Os endpoints da aplicação podem ser visualizados e executados pela ferramenta de documentação **Swagger** presente na aplicação, no endereço:
 
@@ -33,15 +35,15 @@ http://localhost:8080/docs
 
 Uma coleção dos endpoints que pode ser importada no **Postman** pode ser encontrada na pasta `docs` dentro de `desafio_spring`, ou <a href="https://github.com/andreepdiasmeli/desafio-spring/blob/master/desafio_spring/docs/Desafio%20Spring%20SocialMeli.postman_collection.json">clicando aqui</a>.
 
+**Cada requisito foi implementado em um <a href="https://github.com/andreepdiasmeli/desafio-spring/pulls?q=is%3Apr+is%3Aclosed">Pull Request</a>**, assim como algumas correções. A parte inicial da criação das entidades e modificações pontuais foram com *commits* direto na *master*.
+
 #### Status code retorno
 
 Em casos de exceções causadas por IDs não encontrados no banco optamos por retornar o Status Code `422 (Unprocessable Entity)` ao invés do Status Code `400 (Bad Request)`. O motivo desta alteração é que a sintaxe da requisição está correta, porém a operação não pôde ser concluída devido à lógica de negócio da aplicação, conforme mencionado em <a href="https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status/422">MDN Web Docs</a>.
 
+## Endpoints <u>extras</u>
 
-
-## Endpoints extras
-
-Além dos requisitos propostos originalmente, outros endpoints foram criados de modo a extender o propósito da aplicação. **Quatro novos requisitos** foram descritos e as entidades `Category`, `Post`, `Product`, `Seller` e `User` tiveram uma implementação completa de **CRUD's**. Estes novos requisitos podem ser conferidos abaixo.
+Além dos requisitos propostos originalmente, outros endpoints foram criados de modo a extender o propósito da aplicação. **Novos requisitos** foram descritos e as entidades `Category`, `Post`, `Product`, `Seller` e `User` tiveram uma implementação completa de **CRUD's**. Estes novos requisitos podem ser conferidos abaixo.
 
 ### 1. Contagem de vendedores que um usuário segue
 
@@ -72,7 +74,7 @@ O endpoint criado no **US-0012** foi aprimorado para receber dois parâmetros e 
 `GET products/{sellerId}/list?order=date_desc&onlyPromo=true`
 
 **Exemplo de RESPONSE BODY:** 
-```json=
+```json
 {
     "userId": 4,
     "userName": "Lucas",
